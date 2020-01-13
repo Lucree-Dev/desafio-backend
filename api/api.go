@@ -17,9 +17,15 @@ func routeCreateAccount(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	/*
 
+		while is a big void inside here
+
+	*/
 	w.WriteHeader(http.StatusCreated)
-	render.JSON(w, r, account)
+}
+
+func routeFriends(w http.ResponseWriter, r *http.Request) {
 
 }
 
@@ -32,15 +38,22 @@ func setContentJSON(handler http.Handler) http.Handler {
 	})
 }
 
+func restrictRoutes(route chi.Router) {
+	route.Get("/friends", routeFriends)
+}
+
 func Route() (route *chi.Mux) {
 	route = chi.NewRouter()
 
 	//Set header to accept Json content
-	route.Use(render.SetContentType(render.ContentTypeJSON))
+	route.Use(setContentJSON)
 
-	//Create route to create account
-	//Public route (NO AUTHENTICATION)
-	route.Post("/account", routeCreateAccount)
+	//Create routes
+	route.Mount("/account", route.Group(func(r chi.Router) {
+		r.Post("/person", routeCreateAccount)
+
+		r.Group(restrictRoutes)
+	}))
 
 	return
 }
