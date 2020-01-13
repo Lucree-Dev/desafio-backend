@@ -88,7 +88,8 @@ setup() {
 
   echo "Installing Go packages"
   goget "github.com/go-chi/chi" "GoChi"
-  goget "github.com/go-chi/jwtauth" "GoChi-JWT"
+  goget "github.com/go-chi/auth/jwt" "GoChi-JWT"
+  goget "github.com/dgrijalva/jwt-go" "GO-JWT"
   goget "github.com/go-chi/render" "GoChi-Render"
   goget "go.mongodb.org/mongo-driver/mongo" "GoMongoDrive"
   echo "$(tput bold)$(tput setaf 2)ALL PACKAGES INSTALLED!$(tput sgr0)"
