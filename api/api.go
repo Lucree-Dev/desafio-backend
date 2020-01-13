@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/render"
 )
 
-func createAccount(w http.ResponseWriter, r *http.Request) {
+func routeCreateAccount(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	var account models.Account
@@ -35,12 +35,12 @@ func setContentJSON(handler http.Handler) http.Handler {
 func Route() (route *chi.Mux) {
 	route = chi.NewRouter()
 
-	//Set header accept Json content
-	route.Use(setContentJSON)
+	//Set header to accept Json content
+	route.Use(render.SetContentType(render.ContentTypeJSON))
 
 	//Create route to create account
 	//Public route (NO AUTHENTICATION)
-	route.Post("/", createAccount)
+	route.Post("/account", routeCreateAccount)
 
 	return
 }
