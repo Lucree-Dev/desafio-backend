@@ -1,0 +1,9 @@
+version: '3'
+services:
+  api:
+    environment:
+    - "term"
+    build:
+      context: .
+      dockerfile: dockerfile
+    
