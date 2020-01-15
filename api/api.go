@@ -4,13 +4,13 @@ import (
 	"log"
 	"net/http"
 
+	re "gopkg.in/rethinkdb/rethinkdb-go.v6"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/n0bode/desafio-backend/auth"
 	"github.com/n0bode/desafio-backend/database"
 	"github.com/n0bode/desafio-backend/internal/models"
 	"github.com/n0bode/desafio-backend/internal/util"
-
-	"github.com/go-pg/pg"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
@@ -18,7 +18,7 @@ import (
 
 type Api struct {
 	auth *auth.TokenAuth
-	db   *pg.DB
+	db   *re.Session
 }
 
 func (api *Api) routeCreateAccount(w http.ResponseWriter, r *http.Request) {
@@ -43,18 +43,25 @@ func (api *Api) routeCreateAccount(w http.ResponseWriter, r *http.Request) {
 	/*
 		while is a big void inside here
 	*/
-	inserted, err := api.db.Model(&account).Where("username = ?", account.Username).SelectOrInsert()
-
+	cursor, err := re.Table("accounts").Filter(re.Row.Field("user_id").Eq(account.UserID)).Run(api.db)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Println("Error to insert account into database")
-		resp["message"] = "try again later"
+		log.Println(err)
+		resp["message"] = "Internal Error"
 		return
 	}
 
-	if !inserted {
+	if !cursor.IsNil() {
 		w.WriteHeader(http.StatusBadRequest)
-		resp["message"] = "username already exists"
+		resp["message"] = "User already exists"
+		return
+	}
+
+	err = re.Table("accounts").Insert(account).Exec(api.db)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println(err)
+		resp["message"] = "Internal Error"
 		return
 	}
 
@@ -81,6 +88,32 @@ func (api *Api) routeCreateCard(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (api *Api) routeAccountFriends(w http.ResponseWriter, r *http.Request) {
+	claims := api.auth.ClaimsFromContext(r.Context())
+	var userid string = claims["user_id"].(string)
+	cursor, err := re.Table("friends").Filter(re.Row.Field("user_id").Eq(userid)).EqJoin(
+		"friend_id", re.Table("accounts"), re.EqJoinOpts{
+			Index: "user_id",
+		},
+	).Field("right").Without("password", "id").Run(api.db)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+
+	var friend models.Account
+	var friends []models.Account
+	for cursor.Next(&friend) {
+		friends = append(friends, friend)
+	}
+
+	util.SetHeaderJson(w)
+	w.WriteHeader(http.StatusOK)
+	render.JSON(w, r, friends)
+}
+
 func (api *Api) restrictRoutes(route chi.Router) {
 	//Middleware token(JWT) is valid
 	route.Use(api.auth.Verifier)
@@ -88,6 +121,7 @@ func (api *Api) restrictRoutes(route chi.Router) {
 
 	//Route POST create card
 	route.Post("/card", api.routeCreateCard)
+	route.Get("/friends", api.routeAccountFriends)
 }
 
 func (api *Api) Route() *chi.Mux {
