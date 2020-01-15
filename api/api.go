@@ -21,17 +21,13 @@ type Api struct {
 	db   *re.Session
 }
 
-func (api *Api) routeCreateAccount(w http.ResponseWriter, r *http.Request) {
+func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
 	//Set Content-Type application/json
 	util.SetHeaderJson(w)
 
 	resp := make(map[string]interface{})
-	resp["message"] = ""
-
-	defer func() {
-		render.JSON(w, r, resp)
-		r.Body.Close()
-	}()
+	defer r.Body.Close()
+	defer render.JSON(w, r, resp)
 
 	var account models.Account
 	if err := render.DecodeJSON(r.Body, &account); err != nil {
@@ -84,14 +80,43 @@ func (api *Api) routeCreateAccount(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (api *Api) routeCreateCard(w http.ResponseWriter, r *http.Request) {
+func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
+	resp := make(map[string]interface{})
+	defer r.Body.Close()
+	defer render.JSON(w, r, resp)
 
+	var card models.CreditCard
+	if err := render.DecodeJSON(r.Body, &card); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Content Invalid"
+		return
+	}
+
+	claims := api.auth.ClaimsFromContext(r.Context())
+	card.UserID = claims["user_id"].(string)
+
+	info, err := re.Table("creditcards").Insert(card, re.InsertOpts{
+		Conflict: "error",
+	}).RunWrite(api.db)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Internal Error"
+		return
+	}
+
+	if info.Errors != 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Card already registed"
+		return
+	}
 }
 
-func (api *Api) routeAccountFriends(w http.ResponseWriter, r *http.Request) {
+func (api *Api) routeGetFriends(w http.ResponseWriter, r *http.Request) {
 	claims := api.auth.ClaimsFromContext(r.Context())
-	var userid string = claims["user_id"].(string)
-	cursor, err := re.Table("friends").Filter(re.Row.Field("user_id").Eq(userid)).EqJoin(
+
+	//Create foreign key for RethinkDB
+	cursor, err := re.Table("friends").Filter(re.Row.Field("user_id").Eq(claims["user_id"])).EqJoin(
 		"friend_id", re.Table("accounts"), re.EqJoinOpts{
 			Index: "user_id",
 		},
@@ -119,9 +144,11 @@ func (api *Api) restrictRoutes(route chi.Router) {
 	route.Use(api.auth.Verifier)
 	route.Use(api.auth.Authorization)
 
-	//Route POST create card
-	route.Post("/card", api.routeCreateCard)
-	route.Get("/friends", api.routeAccountFriends)
+	//Route Cards
+	route.Post("/card", api.routePostCard) //POST
+	//route.Get("/card", api.routeGetCard)   //GET
+
+	route.Get("/friends", api.routeGetFriends)
 }
 
 func (api *Api) Route() *chi.Mux {
@@ -133,7 +160,7 @@ func (api *Api) Route() *chi.Mux {
 	//Create routes
 	route.Mount("/account", route.Group(func(r chi.Router) {
 		//Accept Json, this method makes route accept only json content as body
-		r.Post("/person", util.AcceptJson(api.routeCreateAccount))
+		r.Post("/person", util.AcceptJson(api.routePostAccount))
 
 		//Restrict Area only to be access with JWT
 		r.Group(api.restrictRoutes)
