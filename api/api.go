@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -36,9 +37,6 @@ func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	/*
-		while is a big void inside here
-	*/
 	cursor, err := re.Table("accounts").Filter(re.Row.Field("user_id").Eq(account.UserID)).Run(api.db)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -85,19 +83,26 @@ func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
 	claims := api.auth.ClaimsFromContext(r.Context())
 	card.UserID = claims["user_id"].(string)
 
-	info, err := re.Table("creditcards").Insert(card, re.InsertOpts{
-		Conflict: "error",
-	}).RunWrite(api.db)
+	cursor, err := re.Table("creditcards").Filter(re.Row.Field("card_id").Eq(card.CardID)).Run(api.db)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println(err)
 		resp["message"] = "Internal Error"
 		return
 	}
 
-	if info.Errors != 0 {
+	if !cursor.IsNil() {
 		w.WriteHeader(http.StatusConflict)
 		resp["message"] = "Card already registed"
+		return
+	}
+
+	info, err := re.Table("creditcards").Insert(card).RunWrite(api.db)
+	if err != nil || info.Inserted == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println(err)
+		resp["message"] = "Internal Error"
 		return
 	}
 
