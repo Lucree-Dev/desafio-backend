@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/render"
 )
@@ -31,4 +32,11 @@ func EncodeToSha256(args ...string) string {
 	}
 	data := sha256.Sum256(b.Bytes())
 	return hex.EncodeToString(data[:])
+}
+
+func GetEnv(key, valueDefault string) (value string) {
+	if value = os.Getenv(key); len(value) == 0 {
+		value = valueDefault
+	}
+	return
 }
