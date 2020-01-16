@@ -75,7 +75,7 @@ func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp["message"] = "Account created with Success"
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
