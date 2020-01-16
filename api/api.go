@@ -162,16 +162,63 @@ func (api *Api) routeGetFriends(w http.ResponseWriter, r *http.Request) {
 	resp["data"] = friends
 }
 
+func (api *Api) routePostTransfer(w http.ResponseWriter, r *http.Request) {
+	resp := make(map[string]interface{})
+	defer r.Body.Close()
+	defer render.JSON(w, r, resp)
+
+	util.SetHeaderJson(w)
+
+	var transfer models.Transfer
+	if err := render.DecodeJSON(r.Body, &transfer); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Content Invalid"
+		return
+	}
+
+	claims := api.auth.ClaimsFromContext(r.Context())
+	transfer.UserID = claims["user_id"].(string)
+
+	cursor, err := re.Table("accounts").Filter(re.Row.Field("user_id").Eq(transfer.FriendID)).Run(api.db)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println(err)
+		resp["message"] = "Internal Error"
+		return
+	}
+
+	if cursor.IsNil() {
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Friend is not exists"
+		return
+	}
+
+	info, err := re.Table("transfers").Insert(transfer).RunWrite(api.db)
+	if err != nil || info.Inserted == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println(err)
+		resp["message"] = "Internal Error"
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	resp["message"] = "Transfer Added"
+}
+
 func (api *Api) restrictRoutes(route chi.Router) {
 	//Middleware token(JWT) is valid
 	route.Use(api.auth.Verifier)
 	route.Use(api.auth.Authorization)
 
-	//Route Cards
-	route.Post("/card", api.routePostCard) //POST
-	route.Get("/cards", api.routeGetCard)  //GET
+	//Route Friends
+	route.Get("/friends", api.routeGetFriends) //GET
 
-	route.Get("/friends", api.routeGetFriends)
+	//Route Cards
+	route.Post("/card", util.AcceptJson(api.routePostCard)) //POST
+	route.Get("/cards", api.routeGetCard)                   //GET
+
+	//Route Transfer
+	route.Post("/transfer", util.AcceptJson(api.routePostTransfer))
 }
 
 func (api *Api) Route() *chi.Mux {
