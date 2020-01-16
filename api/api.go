@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"gopkg.in/go-playground/validator.v9"
+
 	re "gopkg.in/rethinkdb/rethinkdb-go.v6"
 
 	"github.com/n0bode/desafio-backend/api/bankstatement"
@@ -19,8 +21,9 @@ import (
 )
 
 type Api struct {
-	auth *auth.TokenAuth
-	db   *re.Session
+	auth     *auth.TokenAuth
+	db       *re.Session
+	validate *validator.Validate
 }
 
 func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
@@ -38,9 +41,19 @@ func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cursor, err := re.Table("accounts").Filter(re.Row.Field("user_id").Eq(account.UserID)).Run(api.db)
-	if err != nil {
+	if err := api.validate.Struct(&account); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Missing Fields"
+		return
+	}
+
+	cursor, err := re.Table("accounts").Filter(
+		re.Row.Field("username").Eq(account.Username).Or(
+			re.Row.Field("user_id").Eq(account.UserID),
+		),
+	).Run(api.db)
+	if err != nil {
+		w.WriteHeader(http.StatusConflict)
 		log.Println(err)
 		resp["message"] = "Internal Error"
 		return
@@ -52,12 +65,10 @@ func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//Encript source password to sha256
 	account.Password = util.EncodeToSha256(account.Password)
-
-	info, err := re.Table("accounts").Insert(account).RunWrite(api.db)
-	if err != nil || info.Inserted == 0 {
-		w.WriteHeader(http.StatusBadRequest)
+	err = re.Table("accounts").Insert(account).Exec(api.db)
+	if err != nil {
+		w.WriteHeader(http.StatusConflict)
 		log.Println(err)
 		resp["message"] = "Internal Error"
 		return
@@ -78,6 +89,13 @@ func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
 	if err := render.DecodeJSON(r.Body, &card); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		resp["message"] = "Content Invalid"
+		return
+	}
+
+	//Check if creditcard has all fields necessaries
+	if err := api.validate.Struct(&card); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Missing Fields"
 		return
 	}
 
@@ -177,6 +195,13 @@ func (api *Api) routePostTransfer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//Check if transfere has all fields
+	if err := api.validate.Struct(&transfer); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Missing Fields"
+		return
+	}
+
 	claims := api.auth.ClaimsFromContext(r.Context())
 	transfer.UserID = claims["user_id"].(string)
 
@@ -245,7 +270,8 @@ func (api *Api) Route() *chi.Mux {
 
 func New() *Api {
 	return &Api{
-		auth: auth.New("Hello WorldNONU"),
-		db:   database.New(),
+		auth:     auth.New("Hello WorldNONU"),
+		db:       database.New(),
+		validate: validator.New(),
 	}
 }
