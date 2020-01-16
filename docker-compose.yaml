@@ -1,9 +1,37 @@
-version: '3'
+version: '2'
 services:
-  api:
-    environment:
-    - "term"
+  lucree_api:
     build:
       context: .
-      dockerfile: dockerfile
-    
+      dockerfile: docker/api/Dockerfile
+    container_name: lucree_api
+    environment:
+      - API_HOST=172.22.0.2
+      - API_PORT=80
+      - DATABASE_ADDRESS=172.22.0.3:28015
+    ports:
+      - "8080:80"
+    networks:
+      lucree_network:
+        ipv4_address: 172.22.0.2
+    volumes:
+      - .:/go/src/github.com/n0bode/desafio-backend/
+    depends_on: 
+      - lucree_db
+  lucree_db:
+    container_name: lucree_db
+    image: rethinkdb
+    ports:
+    - "28015:28015"
+    - "29015:29016"
+    - "9000:8080"
+    networks:
+      lucree_network:
+        ipv4_address: 172.22.0.3
+networks: 
+  lucree_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.0.0/16
