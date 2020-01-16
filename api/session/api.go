@@ -42,6 +42,12 @@ func (api *Api) routePostSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if len(account.Username) < 4 || len(account.Password) < 6 {
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Field Invalid"
+		return
+	}
+
 	account.Password = util.EncodeToSha256(account.Password)
 	cursor, err := re.Table("accounts").Filter(re.Row.Field("username").Eq(account.Username).And(re.Row.Field("password").Eq(account.Password))).Run(api.db)
 	if err != nil {
@@ -88,14 +94,20 @@ func (api *Api) routeDeleteSession(w http.ResponseWriter, r *http.Request) {
 	//Get user_id from JWTClaims
 	token, err := api.auth.Token(r)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusNonAuthoritativeInfo)
 		return
 	}
 
 	if !token.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	api.auth.AddToBlackList(token)
+
+	if api.auth.AddToBlackList(token) {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (api *Api) Route() (route *chi.Mux) {
