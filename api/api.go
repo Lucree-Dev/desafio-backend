@@ -6,7 +6,7 @@ import (
 
 	re "gopkg.in/rethinkdb/rethinkdb-go.v6"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/n0bode/desafio-backend/api/session"
 	"github.com/n0bode/desafio-backend/auth"
 	"github.com/n0bode/desafio-backend/database"
 	"github.com/n0bode/desafio-backend/internal/models"
@@ -48,71 +48,30 @@ func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !cursor.IsNil() {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusConflict)
 		resp["message"] = "User already exists"
 		return
 	}
 
-	err = re.Table("accounts").Insert(account).Exec(api.db)
-	if err != nil {
+	//Encript source password to sha256
+	account.Password = util.EncodeToSha256(account.Password)
+
+	info, err := re.Table("accounts").Insert(account).RunWrite(api.db)
+	if err != nil || info.Inserted == 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println(err)
 		resp["message"] = "Internal Error"
 		return
 	}
 
-	//Creating token for authentication(JWT)
-	tokenStr, err := api.auth.CreateToken(jwt.MapClaims{
-		"user_id": account.UserID,
-	})
-
-	//Error to create token(JWT)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		resp["message"] = "cannot create authentication"
-		return
-	}
-
-	//Return StatusCreated and Token(JWT)
-	w.WriteHeader(http.StatusCreated)
-	resp["data"] = map[string]interface{}{
-		"token": tokenStr,
-	}
-}
-
-func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
-	resp := make(map[string]interface{})
-	defer r.Body.Close()
-	defer render.JSON(w, r, resp)
-
-	var card models.CreditCard
-	if err := render.DecodeJSON(r.Body, &card); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		resp["message"] = "Content Invalid"
-		return
-	}
-
-	claims := api.auth.ClaimsFromContext(r.Context())
-	card.UserID = claims["user_id"].(string)
-
-	info, err := re.Table("creditcards").Insert(card, re.InsertOpts{
-		Conflict: "error",
-	}).RunWrite(api.db)
-
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		resp["message"] = "Internal Error"
-		return
-	}
-
-	if info.Errors != 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		resp["message"] = "Card already registed"
-		return
-	}
+	resp["message"] = "Account created with Success"
+	w.WriteHeader(http.StatusOK)
 }
 
 func (api *Api) routeGetFriends(w http.ResponseWriter, r *http.Request) {
+	resp := make(map[string]interface{})
+	defer r.Body.Close()
+	defer render.JSON(w, r, resp)
 	claims := api.auth.ClaimsFromContext(r.Context())
 
 	//Create foreign key for RethinkDB
@@ -125,18 +84,17 @@ func (api *Api) routeGetFriends(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println(err)
+		resp["message"] = "Internal Error"
 		return
 	}
 
-	var friend models.Account
-	var friends []models.Account
-	for cursor.Next(&friend) {
-		friends = append(friends, friend)
-	}
+	friends := make([]models.Account, 0)
+	cursor.All(&friends)
 
 	util.SetHeaderJson(w)
 	w.WriteHeader(http.StatusOK)
-	render.JSON(w, r, friends)
+	resp["message"] = "Success"
+	resp["data"] = friends
 }
 
 func (api *Api) restrictRoutes(route chi.Router) {
@@ -145,7 +103,7 @@ func (api *Api) restrictRoutes(route chi.Router) {
 	route.Use(api.auth.Authorization)
 
 	//Route Cards
-	route.Post("/card", api.routePostCard) //POST
+	//route.Post("/card", api.routePostCard) //POST
 	//route.Get("/card", api.routeGetCard)   //GET
 
 	route.Get("/friends", api.routeGetFriends)
@@ -153,15 +111,15 @@ func (api *Api) restrictRoutes(route chi.Router) {
 
 func (api *Api) Route() *chi.Mux {
 	route := chi.NewRouter()
+	session := session.New(api.auth, api.db)
 
-	//Set header to accept Json content
-	//route.Use(util.SetContentJSON)
+	//Create Route to session
+	route.Mount("/session", session.Route())
 
 	//Create routes
 	route.Mount("/account", route.Group(func(r chi.Router) {
 		//Accept Json, this method makes route accept only json content as body
 		r.Post("/person", util.AcceptJson(api.routePostAccount))
-
 		//Restrict Area only to be access with JWT
 		r.Group(api.restrictRoutes)
 	}))
