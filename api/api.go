@@ -68,6 +68,43 @@ func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
+	resp := make(map[string]interface{})
+	defer r.Body.Close()
+	defer render.JSON(w, r, resp)
+
+	util.SetHeaderJson(w)
+
+	var card models.CreditCard
+	if err := render.DecodeJSON(r.Body, &card); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Content Invalid"
+		return
+	}
+
+	claims := api.auth.ClaimsFromContext(r.Context())
+	card.UserID = claims["user_id"].(string)
+
+	info, err := re.Table("creditcards").Insert(card, re.InsertOpts{
+		Conflict: "error",
+	}).RunWrite(api.db)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		resp["message"] = "Internal Error"
+		return
+	}
+
+	if info.Errors != 0 {
+		w.WriteHeader(http.StatusConflict)
+		resp["message"] = "Card already registed"
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	resp["message"] = "CreditCard Added"
+}
+
 func (api *Api) routeGetFriends(w http.ResponseWriter, r *http.Request) {
 	resp := make(map[string]interface{})
 	defer r.Body.Close()
@@ -103,7 +140,7 @@ func (api *Api) restrictRoutes(route chi.Router) {
 	route.Use(api.auth.Authorization)
 
 	//Route Cards
-	//route.Post("/card", api.routePostCard) //POST
+	route.Post("/card", api.routePostCard) //POST
 	//route.Get("/card", api.routeGetCard)   //GET
 
 	route.Get("/friends", api.routeGetFriends)
