@@ -49,7 +49,7 @@ func (api *Api) routeGetBankStatement(w http.ResponseWriter, r *http.Request) {
 
 	//Return StatusCreated and Token(JWT)
 	resp["message"] = "Success"
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	resp["data"] = transfers
 }
 
@@ -73,7 +73,7 @@ func (api *Api) routeGetBankStatementUserID(w http.ResponseWriter, r *http.Reque
 
 	//Return StatusCreated and Token(JWT)
 	resp["message"] = "Success"
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	resp["data"] = transfers
 }
 
