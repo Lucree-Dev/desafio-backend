@@ -33,7 +33,7 @@ func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
 	var account models.Account
 	if err := render.DecodeJSON(r.Body, &account); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		resp["message"] = "content invalid"
+		resp["message"] = "Content Invalid"
 		return
 	}
 
@@ -94,7 +94,7 @@ func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
 
 	if !cursor.IsNil() {
 		w.WriteHeader(http.StatusConflict)
-		resp["message"] = "Card already registed"
+		resp["message"] = "Card Already Registered"
 		return
 	}
 
@@ -108,6 +108,29 @@ func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	resp["message"] = "CreditCard Added"
+}
+
+func (api *Api) routeGetCard(w http.ResponseWriter, r *http.Request) {
+	resp := make(map[string]interface{})
+	defer render.JSON(w, r, resp)
+
+	util.SetHeaderJson(w)
+	claims := api.auth.ClaimsFromContext(r.Context())
+
+	cursor, err := re.Table("creditcards").Filter(re.Row.Field("user_id").Eq(claims["user_id"])).Run(api.db)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println(err)
+		resp["message"] = "Internal Error"
+		return
+	}
+
+	var cards []models.CreditCard
+	cursor.All(&cards)
+
+	w.WriteHeader(http.StatusOK)
+	resp["message"] = "Success"
+	resp["data"] = cards
 }
 
 func (api *Api) routeGetFriends(w http.ResponseWriter, r *http.Request) {
@@ -146,7 +169,7 @@ func (api *Api) restrictRoutes(route chi.Router) {
 
 	//Route Cards
 	route.Post("/card", api.routePostCard) //POST
-	//route.Get("/card", api.routeGetCard)   //GET
+	route.Get("/cards", api.routeGetCard)  //GET
 
 	route.Get("/friends", api.routeGetFriends)
 }
