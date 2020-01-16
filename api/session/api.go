@@ -18,9 +18,8 @@ import (
 )
 
 type Api struct {
-	auth      *auth.TokenAuth
-	db        *re.Session
-	blacklist map[string]bool
+	auth *auth.TokenAuth
+	db   *re.Session
 }
 
 func New(auth *auth.TokenAuth, db *re.Session) (api *Api) {
@@ -34,6 +33,7 @@ func (api *Api) routePostSession(w http.ResponseWriter, r *http.Request) {
 	resp := make(map[string]interface{})
 	defer r.Body.Close()
 	defer render.JSON(w, r, resp)
+	util.SetHeaderJson(w)
 
 	var account models.Account
 	if err := render.DecodeJSON(r.Body, &account); err != nil {

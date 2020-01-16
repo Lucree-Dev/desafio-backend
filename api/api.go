@@ -7,6 +7,7 @@ import (
 
 	re "gopkg.in/rethinkdb/rethinkdb-go.v6"
 
+	"github.com/n0bode/desafio-backend/api/bankstatement"
 	"github.com/n0bode/desafio-backend/api/session"
 	"github.com/n0bode/desafio-backend/auth"
 	"github.com/n0bode/desafio-backend/database"
@@ -219,6 +220,10 @@ func (api *Api) restrictRoutes(route chi.Router) {
 
 	//Route Transfer
 	route.Post("/transfer", util.AcceptJson(api.routePostTransfer))
+
+	//Route bank-statement
+	bank := bankstatement.New(api.auth, api.db)
+	route.Mount("/bank-statement", bank.Route())
 }
 
 func (api *Api) Route() *chi.Mux {
