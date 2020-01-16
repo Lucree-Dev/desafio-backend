@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"testing"
@@ -25,11 +24,12 @@ func TestPostPersonRoute(t *testing.T) {
 	account := models.Account{
 		UserID:    util.EncodeToSha256(randWord()),
 		Password:  "password",
-		FirstName: "ForrestGump",
+		FirstName: "Forrest",
 		LastName:  "Gump",
 		Birthday:  "2560-00-850",
 		Username:  randWord(),
 	}
+	result := make(map[string]interface{})
 
 	t.Run("Create", func(t0 *testing.T) {
 		var b bytes.Buffer
@@ -39,12 +39,16 @@ func TestPostPersonRoute(t *testing.T) {
 
 		resp, err := http.Post("http://localhost:8080/account/person", "application/json", &b)
 		if err != nil {
-			t0.Error(err)
+			t0.Fatal(err)
+		}
+		defer resp.Body.Close()
+
+		if err = json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			t0.Fatal(err)
 		}
 
-		if resp.StatusCode != http.StatusOK {
-			data, _ := ioutil.ReadAll(resp.Body)
-			t.Error(string(data))
+		if resp.StatusCode != http.StatusCreated {
+			t0.Fatal(result["message"])
 		}
 	})
 
@@ -56,7 +60,12 @@ func TestPostPersonRoute(t *testing.T) {
 
 		resp, err := http.Post("http://localhost:8080/account/person", "application/json", &b)
 		if err != nil {
-			t0.Error(err)
+			t0.Fatal(err)
+		}
+		defer resp.Body.Close()
+
+		if err = json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			t0.Fatal(err)
 		}
 
 		if resp.StatusCode == http.StatusOK {
@@ -68,37 +77,16 @@ func TestPostPersonRoute(t *testing.T) {
 		account.Password = ""
 		var b bytes.Buffer
 		if err := json.NewEncoder(&b).Encode(account); err != nil {
-			t0.Error(err)
+			t0.Fatal(err)
 		}
 
 		resp, err := http.Post("http://localhost:8080/account/person", "application/json", &b)
 		if err != nil {
-			t0.Error(err)
+			t0.Fatal(err)
 		}
 
 		if resp.StatusCode == http.StatusOK {
 			t.Fail()
 		}
 	})
-}
-
-func TestPostSession(t *testing.T) {
-	account := models.Account{
-		Username: "Forrest",
-		Password: "password",
-	}
-
-	var b bytes.Buffer
-	if err := json.NewEncoder(&b).Encode(account); err != nil {
-		t.Error(err)
-	}
-
-	resp, err := http.Post("http://localhost:8080/account/person", "application/json", &b)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Fail()
-	}
 }
