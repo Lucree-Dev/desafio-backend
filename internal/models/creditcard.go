@@ -1,16 +1,12 @@
 package models
 
-import "github.com/jinzhu/gorm"
-
 type CreditCard struct {
-	gorm.Model
-	tableName  struct{} `pg:"creditcards"`
-	CardID     string   `json:"card_id,omintempty" rethinkdb:"card_id"`
-	Title      string   `json:"title,omintempty" rethinkdb:"title"`
-	Pan        string   `json:"pan,omintempty" rethinkdb:"pan"`
-	ExpiryMM   string   `json:"expiry_mm,omintempty" rethinkdb:"expiry_mm"`
-	ExpiryYYY  string   `json:"expiry_yyy,omintempty" rethinkdb:"expiry_yyy"`
-	SecuryCode string   `json:"securycode,omintempty" rethinkdb:"securycode"`
-	Date       string   `json:"date,omintempty" rethinkdb:"date"`
-	UserID     string   `json:"-" rethinkdb:"user_id"`
+	CardID       string `json:"card_id,omitempty" rethinkdb:"card_id" validate:"required"`
+	Title        string `json:"title,omitempty" rethinkdb:"title,omitempty" validate:"required"`
+	Pan          string `json:"pan,omitempty" rethinkdb:"pan,omitempty" validate:"required"`
+	ExpiryMM     string `json:"expiry_mm,omitempty" rethinkdb:"expiry_mm,omitempty" validate:"required"`
+	ExpiryYYYY   string `json:"expiry_yyyy,omitempty" rethinkdb:"expiry_yyyy,omitempty" validate:"required"`
+	SecurityCode string `json:"security_code,omitempty" rethinkdb:"security_code,omitempty" validate:"required"`
+	Date         string `json:"date,omitempty" rethinkdb:"date,omitempty" validate:"required"`
+	UserID       string `json:"-" rethinkdb:"user_id,omitempty"`
 }
