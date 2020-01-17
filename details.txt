@@ -49,6 +49,14 @@ Iniciado o banco de dados, há possibilidade de rodar a API dentro de um contain
   $ docker run -it --name api_lucree -p 8080:8080 -e DATABASE_ADDRESS=172.28.0.3:28015 -v $pwd:/go/src/github.com/n0bode/desafio-backend api_lucree
 ```
 
+## SEM DOCKER
+
+Pode-se rodar a API sem incluí-la em um container, execute o script 'setup.sh':
+```console
+  $ sudo chmod 777 setup.py
+  $ setup.py
+  $ go run .
+```
 # API
 
 Nessa API foi incluida a autenticação por JWT (json web token), então existe rotas públicas a e restritas. Essas são as rotas:
@@ -66,7 +74,7 @@ Nessa API foi incluida a autenticação por JWT (json web token), então existe 
 `[GET]    /account/bank-statement`
 `[GET]    /account/bank-statement/{userId}`
 
-##### Para poder acessar essas rotas, é necesário autenticar, para a gerar o token usa-se a rota:
+##### Para poder acessar essas rotas, é necesário autenticar. Para a gerar o token usa-se a rota:
 `[POST]   /session`
 
 Ele deve receber um json contendo "username" e "password" do usuário:
@@ -81,6 +89,7 @@ O Tony já existe para teste e é criado quando a migração é executada. Pode-
 ```bash
   $ curl -X POST -d '{"username" : "Tony","password":"Montana"}' http://localhost:8080/session -i
 ```
+
 Todas os retorna das rotas por padrão tem o formato abaixo, esse formato fornece mais informação sobre a requesição, também é trabalhado com [statuscode](https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html):
 ```json
 {
@@ -97,5 +106,5 @@ Só são consideradas respostas possitivas:
 
 Para testar se tudo está correndo bem, há as classes de teste, para executa-las use:
 ```console
-  $ go test ... -v --count=1
+  $ go test ./api -v --count=1
 ```

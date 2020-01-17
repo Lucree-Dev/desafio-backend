@@ -36,9 +36,11 @@ func TestRouteSession(t *testing.T) {
 			t0.Fail()
 		}
 
-		var response util.Response
+		var response struct {
+			Data string `json:"data"`
+		}
 		json.NewDecoder(resp.Body).Decode(&response)
-		TOKEN = response.Data.(string)
+		TOKEN = response.Data
 	})
 
 	t.Run("Failed Field", func(t0 *testing.T) {

@@ -39,9 +39,12 @@ func TestRouteBankStatement(t *testing.T) {
 			t0.Fail()
 		}
 
-		var response util.Response
+		var response struct {
+			Data string `json:"data"`
+		}
+
 		json.NewDecoder(resp.Body).Decode(&response)
-		TOKEN = response.Data.(string)
+		TOKEN = response.Data
 	})
 
 	req, err := http.NewRequest("GET", "http://"+util.Address()+"/account/bank-statement", nil)
@@ -65,7 +68,7 @@ func TestRouteBankStatement(t *testing.T) {
 			FriendID string `json:"friend_id" validate:"required"`
 			Value    int    `json:"value" validate:"required"`
 			Date     string `json:"date" validate:"required"`
-		}
+		} `json:"data"`
 	}
 
 	if err = json.NewDecoder(resp.Body).Decode(&response); err != nil {

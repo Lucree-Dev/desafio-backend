@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -39,4 +40,10 @@ func GetEnv(key, valueDefault string) (value string) {
 		value = valueDefault
 	}
 	return
+}
+
+func Address() (addr string) {
+	host := GetEnv("API_HOST", "localhost")
+	port := GetEnv("API_PORT", "8080")
+	return fmt.Sprintf("%s:%s", host, port)
 }

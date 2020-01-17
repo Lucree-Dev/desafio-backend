@@ -7,6 +7,9 @@ import (
 	"net/http"
 	"testing"
 	"time"
+	"unsafe"
+
+	"github.com/go-playground/validator"
 
 	"github.com/n0bode/desafio-backend/internal/models"
 	"github.com/n0bode/desafio-backend/internal/util"
@@ -16,6 +19,7 @@ var (
 	TOKEN   string
 	FRIENDS []models.Account
 	CARDS   []models.CreditCard
+	VALID   *validator.Validate
 )
 
 func randWord() (word string) {
@@ -24,6 +28,10 @@ func randWord() (word string) {
 		word += string(rune(32 + rand.Intn(31)))
 	}
 	return
+}
+
+func init() {
+	VALID = validator.New()
 }
 
 func TestPostPersonRoute(t *testing.T) {
@@ -119,9 +127,9 @@ func TestRouteFriends(t *testing.T) {
 			t0.Fail()
 		}
 
-		var response util.Response
+		response := make(map[string]interface{})
 		json.NewDecoder(resp.Body).Decode(&response)
-		TOKEN = response.Data.(string)
+		TOKEN = response["data"].(string)
 	})
 
 	req, err := http.NewRequest("GET", "http://"+util.Address()+"/account/friends", nil)
@@ -142,18 +150,26 @@ func TestRouteFriends(t *testing.T) {
 	}
 
 	var response struct {
-		Message string           `json:"message"`
-		Data    []models.Account `json:"data"`
+		Message string `json:"message"`
+		Data    []struct {
+			FirstName string `json:"first_name" validate:"required"`
+			LastName  string `json:"last_name"  validate:"required"`
+			Birthday  string `json:"birthday"   validate:"required"`
+			Username  string `json:"username"   validate:"required"`
+			UserID    string `json:"user_id"    validate:"required"`
+		} `json:"data"`
 	}
 
 	if err = json.NewDecoder(resp.Body).Decode(&response); err != nil {
 		t.Fatal(err)
 	}
 
-	if len(response.Data) == 0 {
-		t.Fail()
+	for _, friend := range response.Data {
+		if err = VALID.Struct(friend); err != nil {
+			t.Fatal(err)
+		}
+		FRIENDS = append(FRIENDS, *(*models.Account)(unsafe.Pointer(&friend)))
 	}
-	FRIENDS = response.Data
 }
 
 func TestRoutePostCard(t *testing.T) {
@@ -217,8 +233,10 @@ func TestRouteGetCard(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if len(response.Data) == 0 {
-		t.Fail()
+	for _, card := range response.Data {
+		if err = VALID.Struct(card); err != nil {
+			t.Fatal(err)
+		}
 	}
 	CARDS = response.Data
 }
@@ -249,8 +267,6 @@ func TestRoutePostTransfer(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	var response util.Response
-	json.NewDecoder(resp.Body).Decode(&response)
 	if resp.StatusCode != http.StatusCreated {
 		t.Fail()
 	}
