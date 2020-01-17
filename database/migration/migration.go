@@ -78,7 +78,7 @@ func MakeMigration(db *re.Session) {
 	re.Table("friends").Insert([]models.Friend{
 		models.Friend{
 			UserID:   util.EncodeToSha256("Fuck My Ass"),
-			FriendID: util.EncodeToSha256("GodFather"),
+			FriendID: util.EncodeToSha256("Godfather"),
 		},
 		models.Friend{
 			UserID:   util.EncodeToSha256("RunForrest!"),
