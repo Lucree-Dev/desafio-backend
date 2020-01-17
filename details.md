@@ -1,4 +1,3 @@
-(Esse texto esta em details.md)
 # Ferramentas usadas
 - Golang (linguagem)
 - RethinkDB (banco de dados)
