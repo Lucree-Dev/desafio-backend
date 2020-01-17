@@ -21,13 +21,6 @@ type Api struct {
 	db   *re.Session
 }
 
-func New(auth *auth.TokenAuth, db *re.Session) (api *Api) {
-	return &Api{
-		auth: auth,
-		db:   db,
-	}
-}
-
 func (api *Api) routeGetBankStatement(w http.ResponseWriter, r *http.Request) {
 	resp := make(map[string]interface{})
 	defer r.Body.Close()
@@ -36,11 +29,19 @@ func (api *Api) routeGetBankStatement(w http.ResponseWriter, r *http.Request) {
 
 	claims := api.auth.ClaimsFromContext(r.Context())
 
+	//This reql transform total_to_pay to value
+	//And billing_card.card_id from transfer to from_card
 	cursor, err := re.Table("transfers").Filter(
 		re.Row.Field("user_id").Eq(claims["user_id"]).Or(
 			re.Row.Field("friend_id").Eq(claims["user_id"]),
 		),
-	).Without("billing_card", "total_to_transferer").Run(api.db)
+	).Map(func(row re.Term) interface{} {
+		return row.Merge(map[string]interface{}{
+			"from_card": row.Field("billing_card").Field("card_id"),
+			"value":     row.Field("total_to_pay"),
+		})
+	}).Without("billing_card", "id", "total_to_pay").Run(api.db)
+
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println(err)
@@ -64,11 +65,19 @@ func (api *Api) routeGetBankStatementUserID(w http.ResponseWriter, r *http.Reque
 	util.SetHeaderJson(w)
 
 	var userID string = chi.URLParam(r, "userId")
+
+	//This reql transform total_to_pay to value
+	//And billing_card.card_id from transfer to from_card
 	cursor, err := re.Table("transfers").Filter(
 		re.Row.Field("user_id").Eq(userID).Or(
 			re.Row.Field("friend_id").Eq(userID),
 		),
-	).Without("billing_card", "total_to_transferer").Run(api.db)
+	).Map(func(row re.Term) interface{} {
+		return row.Merge(map[string]interface{}{
+			"from_card": row.Field("billing_card").Field("card_id"),
+			"value":     row.Field("total_to_pay"),
+		})
+	}).Without("billing_card", "id", "total_to_pay").Run(api.db)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -89,8 +98,14 @@ func (api *Api) routeGetBankStatementUserID(w http.ResponseWriter, r *http.Reque
 func (api *Api) Route() (route *chi.Mux) {
 	route = chi.NewRouter()
 
-	//Route to access login to create an authorization
 	route.Get("/", api.routeGetBankStatement)
 	route.Get("/{userId}", api.routeGetBankStatementUserID)
 	return
+}
+
+func New(auth *auth.TokenAuth, db *re.Session) (api *Api) {
+	return &Api{
+		auth: auth,
+		db:   db,
+	}
 }

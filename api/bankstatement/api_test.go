@@ -3,10 +3,10 @@ package bankstatement
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"testing"
 
+	"github.com/go-playground/validator"
 	"github.com/n0bode/desafio-backend/internal/models"
 	"github.com/n0bode/desafio-backend/internal/util"
 )
@@ -16,6 +16,8 @@ var (
 )
 
 func TestRouteBankStatement(t *testing.T) {
+	valid := validator.New()
+
 	t.Run("Create Session", func(t0 *testing.T) {
 		account := models.Account{
 			Username: "Tony",
@@ -55,14 +57,28 @@ func TestRouteBankStatement(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		t.Fatal()
+	var response struct {
+		Message string `json:"message"`
+		Data    []struct {
+			FromCard string `json:"from_card" validate:"required"`
+			UserID   string `json:"user_id" validate:"required"`
+			FriendID string `json:"friend_id" validate:"required"`
+			Value    int    `json:"value" validate:"required"`
+			Date     string `json:"date" validate:"required"`
+		}
 	}
 
-	var response util.Response
 	if err = json.NewDecoder(resp.Body).Decode(&response); err != nil {
 		t.Fatal(err)
 	}
 
-	fmt.Println(response)
+	if resp.StatusCode != http.StatusOK {
+		t.Fatal()
+	}
+
+	for _, transfer := range response.Data {
+		if err := valid.Struct(transfer); err != nil {
+			t.Fatal(err)
+		}
+	}
 }
