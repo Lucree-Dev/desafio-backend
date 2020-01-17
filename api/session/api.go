@@ -37,7 +37,7 @@ func (api *Api) routePostSession(w http.ResponseWriter, r *http.Request) {
 
 	var account models.Account
 	if err := render.DecodeJSON(r.Body, &account); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusNotAcceptable)
 		resp["message"] = "Content Invalid"
 		return
 	}

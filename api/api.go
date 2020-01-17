@@ -48,6 +48,7 @@ func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
 
 	if err := api.validate.Struct(&account); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println(err)
 		resp["message"] = "Missing Fields"
 		return
 	}
@@ -104,6 +105,7 @@ func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
 	//Check if creditcard has all fields necessaries
 	if err := api.validate.Struct(&card); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println(err)
 		resp["message"] = "Missing Fields"
 		return
 	}
