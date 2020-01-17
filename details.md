@@ -35,7 +35,7 @@ Primeiro crie um network(bridge) para o conteiner sair do NAT:
 ```
 
 Agora inicie o banco em um container:
-```bash 
+```console
   $ docker run -it --rm --network lucree_net --ip 172.28.0.3 -p 28015:28015 -p 9000:8080 rethinkdb
 ```
 Iniciado o banco de dados, há possibilidade de rodar a API dentro de um container docker, mas é necessario copiar o dockerfile dentro da pasta docker para dentro da pasta raiz. Execute os comandos:
@@ -52,20 +52,20 @@ Iniciado o banco de dados, há possibilidade de rodar a API dentro de um contain
 Nessa API foi incluida a autenticação por JWT (json web token), então existe rotas públicas a e restritas. Essas são as rotas:
 
 **PÚBLICAS:**
-`[POST]  /session`
-`[POST]  /account/person`
+- `[POST]  /session`
+- `[POST]  /account/person`
 
 **RETRISTAS (necessário JWT):**
-`[DELETE] /session`
-`[GET]    /account/friends`
-`[POST]   /account/card`
-`[GET]    /account/cards`
-`[POST]   /account/transfer`
-`[GET]    /account/bank-statement`
-`[GET]    /account/bank-statement/{userId}`
+- `[DELETE] /session`
+- `[GET]    /account/friends`
+- `[POST]   /account/card`
+- `[GET]    /account/cards`
+- `[POST]   /account/transfer`
+- `[GET]    /account/bank-statement`
+- `[GET]    /account/bank-statement/{userId}`
 
 ##### Para poder acessar essas rotas, é necesário autenticar, para a gerar o token usa-se a rota:
-`[POST]   /session`
+- `[POST]   /session`
 
 Ele deve receber um json contendo "username" e "password" do usuário:
 ```json
@@ -76,10 +76,16 @@ Ele deve receber um json contendo "username" e "password" do usuário:
 ```
 
 O Tony já existe para teste e é criado quando a migração é executada. Pode-se testar usando o CURL.
-```bash
-  $ curl -X POST -d '{"username" : "Tony","password":"Montana"}' http://localhost:8080/session -i
+```console
+  $ curl -X POST -d '{"username":"Tony","password":"Montana"}' http://localhost:8080/session -i
 ```
-Todas os retorna das rotas por padrão tem o formato abaixo, esse formato fornece mais informação sobre a requesição, também é trabalhado com [statuscode](https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html):
+
+Para testar todas as rotas usando CURL, existe um arquivo chamado "curl.test.sh", mas precisa ter previamente instalado o [jq](https://stedolan.github.io/jq/), para executá-lo use:
+```console
+  $ bash curl.test.sh
+```
+
+Todas as rotas por padrão tem o retorno no formato abaixo, esse formato fornece mais informação sobre a requesição, também é trabalhado com [statuscode](https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html):
 ```json
 {
     "message":"aqui informa o error",
@@ -87,6 +93,15 @@ Todas os retorna das rotas por padrão tem o formato abaixo, esse formato fornec
 }
 ```
 
-Só são consideradas respostas possitivas:
-`[POST] 201 - Created`
-`[GET]  200 - OK`
+Só são consideradas respostas positivas:
+- `[POST] 201 - Created`
+> Quando o post for concluido
+- `[GET]  200 - OK`
+> Quando houver retorno do get
+
+Resposta de erros ou negativas:
+- `400 - Bad Request`
+> Quando o campo da requisição não foi atendida, ex, json com formato errado
+- `401 Unauthorized`
+> Quando o token não é válido ou não foi informado
+
