@@ -36,7 +36,11 @@ func (api *Api) routeGetBankStatement(w http.ResponseWriter, r *http.Request) {
 
 	claims := api.auth.ClaimsFromContext(r.Context())
 
-	cursor, err := re.Table("transfers").Filter(re.Row.Field("user_id").Eq(claims["user_id"])).Without("billing_card").Run(api.db)
+	cursor, err := re.Table("transfers").Filter(
+		re.Row.Field("user_id").Eq(claims["user_id"]).Or(
+			re.Row.Field("friend_id").Eq(claims["user_id"]),
+		),
+	).Without("billing_card", "total_to_transferer").Run(api.db)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println(err)
@@ -60,7 +64,12 @@ func (api *Api) routeGetBankStatementUserID(w http.ResponseWriter, r *http.Reque
 	util.SetHeaderJson(w)
 
 	var userID string = chi.URLParam(r, "userId")
-	cursor, err := re.Table("transfers").Filter(re.Row.Field("user_id").Eq(userID)).Without("billing_card").Run(api.db)
+	cursor, err := re.Table("transfers").Filter(
+		re.Row.Field("user_id").Eq(userID).Or(
+			re.Row.Field("friend_id").Eq(userID),
+		),
+	).Without("billing_card", "total_to_transferer").Run(api.db)
+
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println(err)

@@ -85,9 +85,7 @@ func (api *Api) routePostSession(w http.ResponseWriter, r *http.Request) {
 	//Return StatusCreated and Token(JWT)
 	resp["message"] = "Success"
 	w.WriteHeader(http.StatusCreated)
-	resp["data"] = map[string]interface{}{
-		"token": tokenStr,
-	}
+	resp["data"] = tokenStr
 }
 
 func (api *Api) routeDeleteSession(w http.ResponseWriter, r *http.Request) {

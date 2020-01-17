@@ -3,7 +3,6 @@ package session
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -27,7 +26,7 @@ func TestRouteSession(t *testing.T) {
 			t0.Fatal(err)
 		}
 
-		resp, err := http.Post("http://localhost:8080/session", "application/json", &b)
+		resp, err := http.Post("http://"+util.Address()+"/session", "application/json", &b)
 		if err != nil {
 			t0.Fatal(err)
 		}
@@ -39,7 +38,7 @@ func TestRouteSession(t *testing.T) {
 
 		var response util.Response
 		json.NewDecoder(resp.Body).Decode(&response)
-		TOKEN = response.Data["token"].(string)
+		TOKEN = response.Data.(string)
 	})
 
 	t.Run("Failed Field", func(t0 *testing.T) {
@@ -51,7 +50,7 @@ func TestRouteSession(t *testing.T) {
 			t0.Fatal(err)
 		}
 
-		resp, err := http.Post("http://localhost:8080/session", "application/json", &b)
+		resp, err := http.Post("http://"+util.Address()+"/session", "application/json", &b)
 		if err != nil {
 			t0.Fatal(err)
 		}
@@ -70,7 +69,7 @@ func TestRouteSession(t *testing.T) {
 			t0.Fatal(err)
 		}
 
-		resp, err := http.Post("http://localhost:8080/session", "application/json", &b)
+		resp, err := http.Post("http://"+util.Address()+"/session", "application/json", &b)
 		if err != nil {
 			t0.Fatal(err)
 		}
@@ -84,7 +83,7 @@ func TestRouteSession(t *testing.T) {
 
 func TestDeleteSession(t *testing.T) {
 	t.Run("Logout", func(t0 *testing.T) {
-		req, err := http.NewRequest("DELETE", "http://localhost:8080/session", nil)
+		req, err := http.NewRequest("DELETE", "http://"+util.Address()+"/session", nil)
 		if err != nil {
 			t0.Fatal(err)
 		}
@@ -103,7 +102,7 @@ func TestDeleteSession(t *testing.T) {
 	})
 
 	t.Run("LogoutAgain", func(t0 *testing.T) {
-		req, err := http.NewRequest("DELETE", "http://localhost:8080/session", nil)
+		req, err := http.NewRequest("DELETE", "http://"+util.Address()+"/session", nil)
 		if err != nil {
 			t0.Fatal(err)
 		}
@@ -116,14 +115,13 @@ func TestDeleteSession(t *testing.T) {
 		}
 		defer resp.Body.Close()
 
-		fmt.Println(resp.StatusCode)
 		if resp.StatusCode != http.StatusNoContent {
 			t0.Fail()
 		}
 	})
 
 	t.Run("Invalid Token", func(t0 *testing.T) {
-		req, err := http.NewRequest("DELETE", "http://localhost:8080/session", nil)
+		req, err := http.NewRequest("DELETE", "http://"+util.Address()+"/session", nil)
 		if err != nil {
 			t0.Fatal(err)
 		}
@@ -135,7 +133,6 @@ func TestDeleteSession(t *testing.T) {
 			t0.Fatal(err)
 		}
 		defer resp.Body.Close()
-		fmt.Println(resp.StatusCode)
 		if resp.StatusCode != http.StatusNonAuthoritativeInfo {
 			t0.Fail()
 		}

@@ -3,6 +3,7 @@ package bankstatement
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -38,7 +39,7 @@ func TestRouteBankStatement(t *testing.T) {
 
 		var response util.Response
 		json.NewDecoder(resp.Body).Decode(&response)
-		TOKEN = response.Data["token"].(string)
+		TOKEN = response.Data.(string)
 	})
 
 	req, err := http.NewRequest("GET", "http://"+util.Address()+"/account/bank-statement", nil)
@@ -57,4 +58,11 @@ func TestRouteBankStatement(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Fatal()
 	}
+
+	var response util.Response
+	if err = json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Println(response)
 }

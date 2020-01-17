@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"gopkg.in/go-playground/validator.v9"
 
@@ -125,7 +126,7 @@ func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 	resp["message"] = "CreditCard Added"
 }
 
@@ -159,7 +160,10 @@ func (api *Api) routeGetFriends(w http.ResponseWriter, r *http.Request) {
 	claims := api.auth.ClaimsFromContext(r.Context())
 
 	//Create foreign key for RethinkDB
-	cursor, err := re.Table("friends").Filter(re.Row.Field("user_id").Eq(claims["user_id"])).EqJoin(
+	cursor, err := re.Table("friends").Filter(
+		re.Row.Field("user_id").Eq(claims["user_id"]).Or(
+			re.Row.Field("friend_id").Eq(claims["user_id"])),
+	).EqJoin(
 		"friend_id", re.Table("accounts"), re.EqJoinOpts{
 			Index: "user_id",
 		},
@@ -204,6 +208,9 @@ func (api *Api) routePostTransfer(w http.ResponseWriter, r *http.Request) {
 
 	claims := api.auth.ClaimsFromContext(r.Context())
 	transfer.UserID = claims["user_id"].(string)
+	transfer.Date = time.Now().Format("MM/dd/YYYY")
+	transfer.FromCard = transfer.BillingCard.CardID
+	transfer.Value = transfer.TotalToPay
 
 	cursor, err := re.Table("accounts").Filter(re.Row.Field("user_id").Eq(transfer.FriendID)).Run(api.db)
 	if err != nil {
@@ -270,7 +277,7 @@ func (api *Api) Route() *chi.Mux {
 
 func New() *Api {
 	return &Api{
-		auth:     auth.New("Hello WorldNONU"),
+		auth:     auth.New(util.GetEnv("JWT_SECRET", "SECRET01")),
 		db:       database.New(),
 		validate: validator.New(),
 	}

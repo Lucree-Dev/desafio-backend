@@ -1,5 +1,3 @@
-( Esse arquivo em markdown details.md )
-
 # Ferramentas usadas
 - Golang (linguagem)
 - RethinkDB (banco de dados)
@@ -92,10 +90,3 @@ Todas os retorna das rotas por padrão tem o formato abaixo, esse formato fornec
 Só são consideradas respostas possitivas:
 `[POST] 201 - Created`
 `[GET]  200 - OK`
-
-## Teste
-
-Para testar se tudo está correndo bem, há as classes de teste, para executa-las use:
-```console
-  $ go test ... -v --count=1
-```
