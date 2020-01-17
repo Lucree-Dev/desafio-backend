@@ -3,7 +3,7 @@ services:
   lucree_api:
     build:
       context: .
-      dockerfile: docker/api/Dockerfile
+      dockerfile: docker/Dockerfile
     container_name: lucree_api
     environment:
       - API_HOST=172.22.0.2
