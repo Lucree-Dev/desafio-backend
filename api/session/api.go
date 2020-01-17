@@ -92,7 +92,7 @@ func (api *Api) routeDeleteSession(w http.ResponseWriter, r *http.Request) {
 	//Get user_id from JWTClaims
 	token, err := api.auth.Token(r)
 	if err != nil {
-		w.WriteHeader(http.StatusNonAuthoritativeInfo)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
