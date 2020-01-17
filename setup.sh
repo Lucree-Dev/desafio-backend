@@ -87,7 +87,6 @@ setup() {
   goget "github.com/go-chi/render" "GoChi-Render"
   goget "gopkg.in/go-playground/validator.v9" "Validator"
   goget "gopkg.in/rethinkdb/rethinkdb-go.v6" "RethinkdbDriver"
-  goget "github.com/spf13/viper" "Viper"
   echo "$(tput bold)$(tput setaf 2)ALL PACKAGES INSTALLED!$(tput sgr0)"
   close
 }
