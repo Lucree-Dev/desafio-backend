@@ -105,3 +105,8 @@ Resposta de erros ou negativas:
 - `401 Unauthorized`
 > Quando o token não é válido ou não foi informado
 
+## Teste
+Para testar se tudo está correndo bem, há as classes de teste, para executa-las use:
+```console
+  $ go test ./api -v
+```
