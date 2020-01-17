@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"sync"
 	"time"
@@ -24,9 +25,7 @@ type TokenAuth struct {
 
 func (t *TokenAuth) Authorization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
 		token, _, err := jwtauth.FromContext(r.Context())
-
 		if err != nil {
 			util.SetHeaderJson(w)
 			w.WriteHeader(http.StatusUnauthorized)
@@ -37,11 +36,13 @@ func (t *TokenAuth) Authorization(next http.Handler) http.Handler {
 		}
 
 		if _, ok := t.blacklist[token.Raw]; ok {
+			fmt.Println(token.Raw)
 			util.SetHeaderJson(w)
 			w.WriteHeader(http.StatusUnauthorized)
 			render.JSON(w, r, map[string]string{
 				"message": "Unauthorized",
 			})
+			return
 		}
 
 		if !token.Valid {
@@ -72,10 +73,12 @@ func (t *TokenAuth) ClaimsFromContext(ctx context.Context) (claims jwt.MapClaims
 	return
 }
 
-func (t *TokenAuth) AddToBlackList(token *jwt.Token) {
+func (t *TokenAuth) AddToBlackList(token *jwt.Token) (ok bool) {
 	defer t.m.Unlock()
 	t.m.Lock()
+	_, ok = t.blacklist[token.Raw]
 	t.blacklist[token.Raw] = true
+	return !ok
 }
 
 func (t *TokenAuth) Token(r *http.Request) (*jwt.Token, error) {
