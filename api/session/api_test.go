@@ -16,8 +16,8 @@ var (
 
 func TestRouteSession(t *testing.T) {
 	account := models.Account{
-		Username: "Tony",
-		Password: "Montana",
+		Username: "VitoCorleone",
+		Password: "Corleone",
 	}
 
 	t.Run("Create Session", func(t0 *testing.T) {
