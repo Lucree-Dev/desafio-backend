@@ -55,6 +55,7 @@ Pode-se rodar a API sem incluí-la em um container, execute o script 'setup.sh':
 ```console
   $ sudo chmod 777 setup.py
   $ setup.py
+  $ DATABASE_ADDRESS=IPDOBANCO:28015
   $ go run .
 ```
 # API
