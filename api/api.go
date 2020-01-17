@@ -27,6 +27,10 @@ type Api struct {
 	validate *validator.Validate
 }
 
+/*
+	ROUTE: account/person
+	METHOD: post
+*/
 func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
 	//Set Content-Type application/json
 	util.SetHeaderJson(w)
@@ -79,6 +83,10 @@ func (api *Api) routePostAccount(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+/*
+	ROUTE: account/card
+	METHOD: post
+*/
 func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
 	resp := make(map[string]interface{})
 	defer r.Body.Close()
@@ -130,6 +138,10 @@ func (api *Api) routePostCard(w http.ResponseWriter, r *http.Request) {
 	resp["message"] = "CreditCard Added"
 }
 
+/*
+	ROUTE: account/cards
+	METHOD: GET
+*/
 func (api *Api) routeGetCard(w http.ResponseWriter, r *http.Request) {
 	resp := make(map[string]interface{})
 	defer render.JSON(w, r, resp)
@@ -153,7 +165,12 @@ func (api *Api) routeGetCard(w http.ResponseWriter, r *http.Request) {
 	resp["data"] = cards
 }
 
+/*
+	ROUTE: account/friends
+	METHOD: GET
+*/
 func (api *Api) routeGetFriends(w http.ResponseWriter, r *http.Request) {
+	util.SetHeaderJson(w)
 	resp := make(map[string]interface{})
 	defer r.Body.Close()
 	defer render.JSON(w, r, resp)
@@ -163,11 +180,12 @@ func (api *Api) routeGetFriends(w http.ResponseWriter, r *http.Request) {
 	cursor, err := re.Table("friends").Filter(
 		re.Row.Field("user_id").Eq(claims["user_id"]).Or(
 			re.Row.Field("friend_id").Eq(claims["user_id"])),
-	).EqJoin(
-		"friend_id", re.Table("accounts"), re.EqJoinOpts{
-			Index: "user_id",
-		},
-	).Field("right").Without("password", "id").Run(api.db)
+	).Map(func(t re.Term) interface{} {
+		return re.Branch(t.Field("friend_id").Eq(claims["user_id"]),
+			re.Table("accounts").Get(t.Field("user_id")).Without("password"),
+			re.Table("accounts").Get(t.Field("friend_id")).Without("password"),
+		)
+	}).Run(api.db)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -177,22 +195,32 @@ func (api *Api) routeGetFriends(w http.ResponseWriter, r *http.Request) {
 	}
 
 	friends := make([]models.Account, 0)
-	cursor.All(&friends)
+	if err := cursor.All(&friends); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println(err)
+		resp["message"] = "Internal Error"
+		return
+	}
 
-	util.SetHeaderJson(w)
 	w.WriteHeader(http.StatusOK)
 	resp["message"] = "Success"
 	resp["data"] = friends
 }
 
+/*
+	ROUTE: account/transfer
+	METHOD: post
+*/
 func (api *Api) routePostTransfer(w http.ResponseWriter, r *http.Request) {
 	resp := make(map[string]interface{})
 	defer r.Body.Close()
 	defer render.JSON(w, r, resp)
 
+	//Set Header to Application/JSON
 	util.SetHeaderJson(w)
 
 	var transfer models.Transfer
+	//Decode request body to JsonObject
 	if err := render.DecodeJSON(r.Body, &transfer); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		resp["message"] = "Content Invalid"
@@ -206,10 +234,14 @@ func (api *Api) routePostTransfer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//Extract informations from JWT
 	claims := api.auth.ClaimsFromContext(r.Context())
+
 	transfer.UserID = claims["user_id"].(string)
+	//Set time now for transferer
 	transfer.Date = time.Now().Format("01/02/2006")
 
+	//Quering from DB if friend_id exist as Account
 	cursor, err := re.Table("accounts").Filter(re.Row.Field("user_id").Eq(transfer.FriendID)).Run(api.db)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -217,12 +249,14 @@ func (api *Api) routePostTransfer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//Check if Friend exists
 	if cursor.IsNil() {
 		w.WriteHeader(http.StatusBadRequest)
 		resp["message"] = "Friend is not exists"
 		return
 	}
 
+	//Inserting new transfer to DB
 	info, err := re.Table("transfers").Insert(transfer).RunWrite(api.db)
 	if err != nil || info.Inserted == 0 {
 		w.WriteHeader(http.StatusBadRequest)
@@ -231,10 +265,12 @@ func (api *Api) routePostTransfer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//If added success
 	w.WriteHeader(http.StatusCreated)
 	resp["message"] = "Transfer Added"
 }
 
+//This method create restrictRoutes
 func (api *Api) restrictRoutes(route chi.Router) {
 	//Middleware token(JWT) is valid
 	route.Use(api.auth.Verifier)
@@ -255,6 +291,7 @@ func (api *Api) restrictRoutes(route chi.Router) {
 	route.Mount("/bank-statement", bank.Route())
 }
 
+// Route creates account/* routes
 func (api *Api) Route() *chi.Mux {
 	route := chi.NewRouter()
 	session := session.New(api.auth, api.db)
@@ -272,6 +309,8 @@ func (api *Api) Route() *chi.Mux {
 	return route
 }
 
+//New is the construct for the api
+//Here where all necessaries variabels are initialized
 func New() *Api {
 	return &Api{
 		auth:     auth.New("SECRET"),
