@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"math/rand"
 	"net/http"
 	"testing"
@@ -14,7 +13,9 @@ import (
 )
 
 var (
-	TOKEN string
+	TOKEN   string
+	FRIENDS []models.Account
+	CARDS   []models.CreditCard
 )
 
 func randWord() (word string) {
@@ -140,14 +141,19 @@ func TestRouteFriends(t *testing.T) {
 		t.Fail()
 	}
 
-	var response util.Response
+	var response struct {
+		Message string           `json:"message"`
+		Data    []models.Account `json:"data"`
+	}
+
 	if err = json.NewDecoder(resp.Body).Decode(&response); err != nil {
 		t.Fatal(err)
 	}
 
-	if len(response.Data.([]interface{})) == 0 {
+	if len(response.Data) == 0 {
 		t.Fail()
 	}
+	FRIENDS = response.Data
 }
 
 func TestRoutePostCard(t *testing.T) {
@@ -177,7 +183,74 @@ func TestRoutePostCard(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer resp.Body.Close()
-	fmt.Println(resp.StatusCode)
+	if resp.StatusCode != http.StatusCreated {
+		t.Fail()
+	}
+}
+
+func TestRouteGetCard(t *testing.T) {
+
+	req, err := http.NewRequest("GET", "http://"+util.Address()+"/account/cards", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	//Set token to header
+	req.Header.Set("Authorization", "Bearer "+TOKEN)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fail()
+	}
+
+	var response struct {
+		Message string              `json:"message"`
+		Data    []models.CreditCard `json:"data"`
+	}
+
+	if err = json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		t.Fatal(err)
+	}
+
+	if len(response.Data) == 0 {
+		t.Fail()
+	}
+	CARDS = response.Data
+}
+
+func TestRoutePostTransfer(t *testing.T) {
+	var body bytes.Buffer
+	if err := json.NewEncoder(&body).Encode(models.Transfer{
+		FriendID:   FRIENDS[len(FRIENDS)-1].UserID,
+		TotalToPay: 8080,
+		BillingCard: &models.BillingCard{
+			CardID: CARDS[len(CARDS)-1].CardID,
+		},
+	}); err != nil {
+		t.Error(err)
+	}
+
+	req, err := http.NewRequest("POST", "http://"+util.Address()+"/account/transfer", &body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	//Set token to header
+	req.Header.Set("Authorization", "Bearer "+TOKEN)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	var response util.Response
+	json.NewDecoder(resp.Body).Decode(&response)
 	if resp.StatusCode != http.StatusCreated {
 		t.Fail()
 	}

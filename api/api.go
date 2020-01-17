@@ -208,14 +208,11 @@ func (api *Api) routePostTransfer(w http.ResponseWriter, r *http.Request) {
 
 	claims := api.auth.ClaimsFromContext(r.Context())
 	transfer.UserID = claims["user_id"].(string)
-	transfer.Date = time.Now().Format("MM/dd/YYYY")
-	transfer.FromCard = transfer.BillingCard.CardID
-	transfer.Value = transfer.TotalToPay
+	transfer.Date = time.Now().Format("01/02/2006")
 
 	cursor, err := re.Table("accounts").Filter(re.Row.Field("user_id").Eq(transfer.FriendID)).Run(api.db)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Println(err)
 		resp["message"] = "Internal Error"
 		return
 	}
@@ -234,7 +231,7 @@ func (api *Api) routePostTransfer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 	resp["message"] = "Transfer Added"
 }
 
@@ -277,7 +274,7 @@ func (api *Api) Route() *chi.Mux {
 
 func New() *Api {
 	return &Api{
-		auth:     auth.New(util.GetEnv("JWT_SECRET", "SECRET01")),
+		auth:     auth.New("SECRET"),
 		db:       database.New(),
 		validate: validator.New(),
 	}
