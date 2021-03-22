@@ -1,0 +1,15 @@
+// {
+//     "[json]": {
+//         "editor.quickSuggestions": {
+//             "strings": true
+//         },
+//         "editor.suggest.insertMode": "replace"
+//     }
+// }
+
+{
+    "python.linting.pylintArgs": [
+        "--load-plugins",
+        "pylint_flask_sqlalcheny"
+    ]
+}
