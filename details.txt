@@ -1,7 +1,7 @@
-python3 -m venv venv
+python -m venv venv
 
 "source env/bin/activate" CASO ESTEJA COM MACOS OU Linux
-".\env\Scripts\activate" NO WINDOWS
+".\venv\Scripts\activate" NO WINDOWS
 
 pip install -r requirements.txt
 
