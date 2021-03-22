@@ -16,4 +16,14 @@ Descrição:
         O módulo peewee responsável pelo ORM.
 
     - Em http://localhost:5000/docs tem acesso a documentação a API e seus acessos
-    - Para garar o token: usuário: samurai; senha: senha01 (padrão para todos)
+    - Para gerar o token: usuário: samurai; senha: senha01 (padrão para todos)
+
+    - O processo de autenticação faz parte do módulo [auth]
+        - Em auth.auth.py há três definições [jwt_encode, jwt_decode, auth_wrapper]
+		- jwt_encode pegar o nome de usuário da pessoa e coloca no payload dando também
+	  	um prazo de validade para o token de 15 minutos.
+		- jwt_decode fará o processo inverso pegando o token e retornando o usuário de pessoa
+		- auth_wrapper é um decorador para os endpoints onde irá lidar com jwt_decode retornando
+	   	apenas o usuário somente o token que estiver dentro do período de validade e seja autentico.
+	- Em auth.router.py é definido o ENDPOINT para /token que retorna o Token JWT de acordo como
+	descrito anteriormente.
