@@ -14,3 +14,6 @@ Descrição:
         O módulo python-jose realiza o encode e decode do token JWT
         O módulo bcrypt responsável pelo hash das senhas
         O módulo peewee responsável pelo ORM.
+
+    - Em http://localhost:5000/docs tem acesso a documentação a API e seus acessos
+    - Para garar o token: usuário: samurai; senha: senha01 (padrão para todos)
