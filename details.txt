@@ -1,1 +1,16 @@
 
+para executar o projeto recomendo criar uma virtual env
+
+python3 -m venv venv
+
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+python server.py
+
+Descrição:
+    - Desafio realizado com o FastAPI como framework para realizar a API.
+        O módulo python-jose realiza o encode e decode do token JWT
+        O módulo bcrypt responsável pelo hash das senhas
+        O módulo peewee responsável pelo ORM.
