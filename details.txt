@@ -1,11 +1,17 @@
-python -m venv venv
+ - Crie um banco mysql, coloque as informacoes de host, nome do banco e  senha na linha 11 do arquivo app.py na raiz do projeto.
 
-"source env/bin/activate" CASO ESTEJA COM MACOS OU Linux
-".\venv\Scripts\activate" NO WINDOWS
+ - Execute;
+    python -m venv venv
 
-pip install -r requirements.txt
+ - Depois ative o hambiente virtual;
+    "source env/bin/activate" CASO ESTEJA COM MACOS OU Linux
+    ".\venv\Scripts\activate" NO WINDOWS
 
-python app.py
+ - Intale as dependencias; 
+    pip install -r requirements.txt
+
+ - Inicie o servidor da aplicação.
+    python app.py
 
 
 
