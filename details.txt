@@ -4,7 +4,7 @@
     python -m venv venv
 
  - Depois ative o hambiente virtual;
-    "source env/bin/activate" CASO ESTEJA COM MACOS OU Linux
+    "source venv/bin/activate" CASO ESTEJA COM MACOS OU Linux
     ".\venv\Scripts\activate" NO WINDOWS
 
  - Intale as dependencias; 

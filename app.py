@@ -199,7 +199,7 @@ class TransferSchema(ModelSchema):
         date = fields.String(required=True)
 
 
-@app.route('/cards', methods=['GET'])
+@app.route('/account/cards', methods=['GET'])
 def all_cards():
     get_cards = Card.query.all()
     cards_schema = CardSchema(many=True, only=Card.columns())
@@ -207,7 +207,7 @@ def all_cards():
     return make_response(jsonify(cards))
 
 
-@app.route('/card/<id>', methods=['GET'])
+@app.route('/account/card/<id>', methods=['GET'])
 def get_card_by_id(id):
     get_card = Card.query.get(id)
     if not get_card:
@@ -217,7 +217,7 @@ def get_card_by_id(id):
     return make_response(jsonify(card))
 
 
-@app.route('/card/<id>', methods=['PUT'])
+@app.route('/account/card/<id>', methods=['PUT'])
 def update_card_by_id(id):
     data = request.get_json()
     get_card = Card.query.get(id)
@@ -241,7 +241,7 @@ def update_card_by_id(id):
     return make_response(jsonify(card))
 
 
-@app.route('/card/<id>', methods=['DELETE'])
+@app.route('/account/card/<id>', methods=['DELETE'])
 def delete_card_by_id(id):
     get_card = Card.query.get(id)
     if not get_card:
@@ -251,7 +251,7 @@ def delete_card_by_id(id):
     return make_response('', 204)
 
 
-@app.route('/card', methods=['POST'])
+@app.route('/account/card', methods=['POST'])
 def create_card():
     try:
         data = request.get_json()
@@ -332,6 +332,8 @@ def all_bank_statement():
 @app.route('/account/bank-statement/<user_id>', methods=['GET'])
 def all_bank_statement_id(user_id):
     return make_response({'error': {'messenger': 'not found'}}, 400)
+
+teste = CardSchema('2131','2312','2312','2312','2312','2312','2312','2312')
 
 
 if __name__ == "__main__":
