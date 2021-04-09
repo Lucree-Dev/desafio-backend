@@ -1,1 +1,37 @@
+ - Crie um banco mysql, coloque as informacoes de host, nome do banco e  senha na linha 11 do arquivo app.py na raiz do projeto.
 
+ - Execute;
+    python -m venv venv
+
+ - Depois ative o hambiente virtual;
+    "source venv/bin/activate" CASO ESTEJA COM MACOS OU Linux
+    ".\venv\Scripts\activate" NO WINDOWS
+
+ - Intale as dependencias; 
+    pip install -r requirements.txt
+
+ - Inicie o servidor da aplicação.
+    python app.py
+
+
+
+rotas disponiveis 
+
+Card
+/account/card    -POST
+/account/cards   -GET
+/account/card/id -GET
+/account/card/id -PUT
+/account/card/id -DELETE
+
+Person
+/account/person - POST
+
+Friend
+/account/friend  - POST
+/account/friends - GET
+
+Transfer
+/account/transfer                 - POST
+/account/bank-statement           - GET
+/account/bank-statement/<user_id> - GET [não consegui usar o 'filter_by' e pesquisar pelo 'user_id']
