@@ -1,19 +1,18 @@
 from flask import request
-from flask_restx import Resource
-
+from schemas.account import UserSchema, CardSchema
 from models.user import UserModel
-from schemas.account import *  
+from models.cards import CardModel
+from models.transfer import TransferModel
 
-from server.instance import server
-
-account_ns = server.account_ns
 user_schema = UserSchema(many=True)
+card_schema = CardSchema(many=True)
+#transfer_schema = TransferSchema()
 
 ITEM_NOT_FOUND = 'Not found'
 
-class Account(Resource):
+class Account():
 
-    def post_person():
+    def post_person(self, ):
         person_json = request.get_json()
         person_data = user_schema.load(person_json)
 
@@ -28,4 +27,33 @@ class Account(Resource):
         else:
             return { 'message': ITEM_NOT_FOUND}, 404
 
+    def post_card(self, ):
+        card_json = request.get_json()
+        card_data = card_schema.load(card_json)
 
+        card_data.save_to_db()
+
+        return card_schema.dump(card_data), 201
+
+    def get_cards(self, ):
+        cards_data = CardModel.get_from_db(), 200
+        if cards_data:
+            return card_schema.dump(cards_data)
+        else:
+            return { 'message': ITEM_NOT_FOUND}, 404
+
+    def post_transfer(self, ):
+        transfer_json = request.get_json()
+        transfer_data = transfer_schema.load(transfer_json)
+
+        transfer_data.save_to_db()
+
+        return transfer_schema.dump(transfer_data), 201
+
+    def get_transfers(self, ):
+        transfers_data = TransferModel.get_from_db(), 200
+        if transfers_data:
+            return transfer_schema.dump(transfers_data)
+        else:
+            return { 'message': ITEM_NOT_FOUND}, 404
+            
