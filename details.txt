@@ -1,1 +1,5 @@
+Usei a linguagem GO para o desenvolvimento da API e MYSQL para o Banco De Dados por ser mais facil de trabalhar, demorei em torno de 3 horas para desenvolver a API completa,
+Todas as rotas menos a   ( POST /account/person ) necessitam de um JWT para funcionar, nao compreendi muito bem a parte de amigos então o único jeito de adicionar amigos é diretamente do banco de dados,
+onde eu criei uma tabela de vinculo para isso, irei deixar o arquivo de importação do BD junto a este.
 
+Estaria enviando o .ENV para mostrar como funciona o processo
