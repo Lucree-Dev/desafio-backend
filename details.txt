@@ -1,1 +1,10 @@
+Para o desenvilvimento dessa API utilizei:
 
+fastAPI
+      comando de instalação: pip install fastapi
+
+uvicorn
+      comando de instalação: pip install uvicorn
+
+peewee
+      comando de instalação: pip install peewee
