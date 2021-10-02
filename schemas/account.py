@@ -1,19 +1,38 @@
-from ma import ma
+from marshmallow_sqlalchemy import ModelSchema
+from models.friends import FriendModel
 from models.user import UserModel
 from models.cards import CardModel
-from models.transfer import TransferModel
+from marshmallow import fields
+from server.instance import db
 
-class UserSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
+class UserSchema(ModelSchema):
+    class Meta(ModelSchema.Meta):
         model = UserModel
-        load_instance = True
+        sqla_session = db.session       
+        user_id = fields.Integer(required=True)
+        first_name = fields.String(required=True)
+        last_name = fields.String(required=True)
+        birthday = fields.String(required=True)
+        username = fields.String(required=True)
+        password = fields.String(required=True)
 
-class CardSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
+class CardSchema(ModelSchema):
+    class Meta(ModelSchema.Meta):
         model = CardModel
-        load_instance = True
+        sqla_session = db.session
+        user_id = fields.String(required=True)
+        card_id = fields.Integer(required=True)
+        title = fields.String(required=True)
+        pan = fields.String(required=True)
+        expiry_mm = fields.String(required=True)
+        expiry_yyyy = fields.String(required=True)
+        security_code = fields.String(required=True)
+        date = fields.String(required=True)
 
-#class TransferSchema(ma.SQLAlchemyAutoSchema):
-#   class Meta:
-#       model = TransferModel
-#       load_instance = True
+class FriendSchema(ModelSchema):
+    class Meta(ModelSchema.Meta):
+        model = FriendModel
+        sqla_session = db.session
+        friend_id = fields.String(required=True)
+        user_id = fields.String(required=True)
+        username = fields.String(required=True)

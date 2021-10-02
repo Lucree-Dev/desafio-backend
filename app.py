@@ -1,44 +1,50 @@
-from flask import request
-from ma import ma
-from db import db
-from controllers.account import Account
-from server.instance import server
+from flask import Flask, request, jsonify, make_response
+from marshmallow import ValidationError
+from schemas.account import UserSchema, CardSchema, FriendSchema
+from server.instance import server, db, app
 
-app = server.app
-account_controller = Account()
+
+user_schema = UserSchema()
+card_schema = CardSchema()
+friend_schema = FriendSchema()
 
 @app.before_first_request
 def create_tables():
     db.create_all()
 
-@app.route('/account', methods=['POST'])
-def post_person_route():
-    request_body = request.json
-    return account_controller.post_person()
+@app.route('/account/person', methods=['POST'])
+def post_person():
+    try:
+        person_data = user_schema.load(request.get_json())
+        person_data.save_to_db()
+        person = user_schema.dump(person_data)
+    
+        return make_response(person, 200)
+    except ValidationError as error:
+        return make_response(error.messages, 422)
 
-@app.route('/account', methods=['GET'])
-def get_friends_route(user_id):
-    return account_controller.get_friends(user_id)
+@app.route('/account/card', methods=['POST'])
+def post_card():
+    try:
+        card_data = card_schema.load(request.get_json())
+        card_data.save_to_db()
+        card = card_schema.dump(card_data)
+    
 
-@app.route('/account', methods=['POST'])
-def post_card_route():
-    request_body = request.json
-    return account_controller.post_card()
+        return make_response(card, 200)
+    except ValidationError as error:
+        return error.messages, 422
 
-@app.route('/account', methods=['GET'])
-def get_cards_route():
-    return account_controller.get_cards()
-
-@app.route('/account', methods=['POST'])
-def post_transfer_route():
-    request_body = request.json
-    return account_controller.post_transfer()
-
-@app.route('/account', methods=['GET'])
-def get_tranfers_route():
-    return account_controller.get_transfers()
+@app.route('/account/friend', methods=['POST'])
+def post_friend():
+    try:
+        friend_data = friend_schema.load(request.get_json())
+        friend_data.save_to_db()
+        friend = friend_schema.dump(friend_data)
+        return make_response(friend, 200)
+    except ValidationError as err:
+        return make_response(err.messages, 422)
 
 if __name__ == '__main__':
     db.init_app(app)
-    ma.init_app(app)
     server.run()

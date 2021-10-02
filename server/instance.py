@@ -1,4 +1,5 @@
 from flask import Flask, Blueprint
+from flask_sqlalchemy import SQLAlchemy
 
 class Server():
     def __init__(self, ):
@@ -17,3 +18,5 @@ class Server():
             host='0.0.0.0'
             )
 server = Server()
+app = server.app
+db = SQLAlchemy(app)
