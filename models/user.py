@@ -2,7 +2,7 @@ from server.instance import db
 
 class UserModel(db.Model):
     __tablename__ = 'users'
-    user_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String, primary_key=True)
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
     birthday = db.Column(db.String(10))
@@ -20,7 +20,6 @@ class UserModel(db.Model):
     def __repr__(self):
         return '' % self.user_id
     
-    @classmethod
     def save_to_db(self, ):
         try:
             db.session.add(self)
@@ -28,7 +27,3 @@ class UserModel(db.Model):
             return self
         except:
             return db.session.rollback()
-
-    @classmethod
-    def get_from_db(cls, user_id):
-        return cls.query.filter_by(user_id != user_id).all()

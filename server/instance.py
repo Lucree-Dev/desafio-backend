@@ -11,6 +11,7 @@ class Server():
         self.app.config['PROPAGATE_EXCEPTIONS'] = True
         self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
+
     def run(self, ):
         self.app.run(
             port=5000,
