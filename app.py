@@ -90,14 +90,15 @@ def get_bank_statement():
 
 @app.route('/account/bank-statement/<user_id>', methods=['GET'])
 def get_bank_statement_id(user_id):
-        
-    bank_statement = TransferModel.query.filter_by(user_id=user_id).all()
-    transfer_schema = TransferSchema(many=True)
-    bank_statement = transfer_schema.dump(bank_statement)
-    array_result = np.asarray(bank_statement)
-    lst = array_result.tolist()
-    return make_response(json.dumps(lst), 200)
- 
+    try:    
+        bank_statement = TransferModel.query.filter_by(user_id=user_id).all()
+        transfer_schema = TransferSchema(many=True)
+        bank_statement = transfer_schema.dump(bank_statement)
+        array_result = np.asarray(bank_statement)
+        lst = array_result.tolist()
+        return make_response(json.dumps(lst), 200)
+    except ValidationError as error:
+        return make_response(error.messages, 422)
 
 if __name__ == '__main__':
     db.init_app(app)
