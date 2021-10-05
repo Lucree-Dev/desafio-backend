@@ -1,9 +1,7 @@
 from flask import request, jsonify, make_response
 from marshmallow import ValidationError
-from models.friends import FriendModel
-from models.cards import CardModel
-from models.transfer import TransferModel
-from schemas.account import UserSchema, CardSchema, FriendSchema, TransferSchema
+from models import FriendModel, CardModel, TransferModel
+from schemas import UserSchema, CardSchema, FriendSchema, TransferSchema
 from server.instance import server, db, app
 import numpy as np
 import json
@@ -85,22 +83,21 @@ def get_bank_statement():
         transfer_schema = TransferSchema(many=True)
         bank_statement = transfer_schema.dump(bank_statement)
         array = np.asarray(bank_statement)
-        list = array.tolist()
-        return make_response(json.dumps(list), 200)
+        lst = array.tolist()
+        return make_response(json.dumps(lst), 200)
     except ValidationError as error:
         return make_response(error.messages, 422)
 
 @app.route('/account/bank-statement/<user_id>', methods=['GET'])
 def get_bank_statement_id(user_id):
-    try:
-        bank_statement = TransferModel.query.get(user_id)
-        transfer_schema = TransferSchema(many=True)
-        bank_statement = transfer_schema.dump(bank_statement)
-        array_result = np.asarray(bank_statement)
-        list = array_result.tolist()
-        return make_response(json.dumps(list), 200)
-    except ValidationError as error:
-        return make_response(error.messages, 422)
+        
+    bank_statement = TransferModel.query.filter_by(user_id=user_id).all()
+    transfer_schema = TransferSchema(many=True)
+    bank_statement = transfer_schema.dump(bank_statement)
+    array_result = np.asarray(bank_statement)
+    lst = array_result.tolist()
+    return make_response(json.dumps(lst), 200)
+ 
 
 if __name__ == '__main__':
     db.init_app(app)

@@ -1,8 +1,5 @@
 from marshmallow_sqlalchemy import ModelSchema
-from models.friends import FriendModel
-from models.user import UserModel
-from models.cards import CardModel
-from models.transfer import TransferModel
+from models import UserModel, FriendModel, CardModel, TransferModel
 from marshmallow import fields
 from server.instance import db
 
@@ -10,7 +7,7 @@ class UserSchema(ModelSchema):
     class Meta(ModelSchema.Meta):
         model = UserModel
         sqla_session = db.session       
-        user_id = fields.String(required=True)
+        user_id = fields.Integer(required=True)
         first_name = fields.String(required=True)
         last_name = fields.String(required=True)
         birthday = fields.String(required=True)
