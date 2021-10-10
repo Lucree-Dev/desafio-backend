@@ -1,7 +1,5 @@
 from server.instance import db
 from datetime import date
-from werkzeug.security import generate_password_hash, check_password_hash
-
 
 class UserModel(db.Model):
     __tablename__ = 'users'
@@ -18,10 +16,7 @@ class UserModel(db.Model):
         self.last_name = last_name
         self.birthday = birthday
         self.username = username
-        self.password = generate_password_hash(password)
-
-    def verify_password(self, password):
-        return check_password_hash(self.password, password)
+        self.password = password
 
     def __repr__(self):
         return '' % self.user_id
