@@ -5,7 +5,14 @@ from digital_account.blueprints.database.save import saving_transfer_value
 from config import db
 
 
-def transfer_values(json_request):
+def transfer_values(json_request: dict) -> object:
+    """
+    That method will do the value transfer and will save in the database. That method will do all validations before
+    save in the database.
+    :param json_request: A json the do all validations before save in the database.
+    :return: It will return a dict with page status code.
+    """
+
     db.create_all()
     user_db = reading_user_id_table_info_account(user_id=json_request["user_id"])
     friend_db = reading_user_id_table_info_account(json_request["friend_id"])

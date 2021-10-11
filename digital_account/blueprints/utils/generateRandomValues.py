@@ -25,4 +25,10 @@ def random_float_number() -> float:
 
 
 def generate_random_number(length):
+    """
+    That method will generate a random numbers.
+
+    :param length: The lenght of number to generate.
+    :return: It return the random number.
+    """
     return int(''.join([str(random.randint(0,10)) for _ in range(length)]))

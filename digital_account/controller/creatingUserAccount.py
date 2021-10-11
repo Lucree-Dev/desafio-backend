@@ -8,6 +8,12 @@ from werkzeug.security import generate_password_hash
 
 
 def post_save_user_account(json_object: dict) -> object:
+    """
+    That method will treat all information about the card before save in the database.
+    :param json_object: It will receive a json with all informations sent in the body json to save in the database.
+    :return: It will return a json with page status code.
+    """
+
     db.create_all()
 
     # Checking if username is on database, if yes, it return the error to create another username.

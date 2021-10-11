@@ -7,6 +7,13 @@ from digital_account.blueprints.database.save import saving_table_card_informati
 
 
 def post_save_card_information(json_object: dict) -> object:
+    """
+    That method will save the information about the card in the database, at the table card-information. That method
+    will threat all information necessary before save in the database.
+    :param json_object: a dict with all informations received in the body of post json.
+    :return: It will return a json with the page status code.
+    """
+
     db.create_all()
 
     # Checking if Card Number is on database:

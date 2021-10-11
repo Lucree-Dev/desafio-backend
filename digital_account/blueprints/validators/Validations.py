@@ -1,4 +1,11 @@
-def validate_user_creation(json_data):
+def validate_user_creation(json_data: dict) -> bool:
+    """
+    That method will validate all informations receive in the json.
+    :param json_data: A dict with information received in the body of json in the post.
+    :return: It will return a bool, if all information are in the body of message, it return true, if a specific
+             information is not sent, it will return a false.
+    """
+
     if "first_name" not in json_data:
         return False
 
@@ -17,7 +24,14 @@ def validate_user_creation(json_data):
     return True
 
 
-def validate_card(json_data):
+def validate_card(json_data: dict) -> bool:
+    """
+    That method will validate all informations receive in the json.
+    :param json_data: A dict with information received in the body of json in the post.
+    :return: It will return a bool, if all information are in the body of message, it return true, if a specific
+             information is not sent, it will return a false.
+    """
+
     if "user_id" not in json_data:
         return False
 
@@ -42,7 +56,14 @@ def validate_card(json_data):
     return True
 
 
-def validate_account_transfer(json_data):
+def validate_account_transfer(json_data: dict) -> bool:
+    """
+    That method will validate all informations receive in the json.
+    :param json_data: A dict with information received in the body of json in the post.
+    :return: It will return a bool, if all information are in the body of message, it return true, if a specific
+             information is not sent, it will return a false.
+    """
+
     if "user_id" not in json_data:
         return False
 

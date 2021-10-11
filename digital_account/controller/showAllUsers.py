@@ -3,7 +3,12 @@ from digital_account.blueprints.return_message.jsonWithCode import sucessfully
 from config import db
 
 
-def get_all_users_table_person_info_account():
+def get_all_users_table_person_info_account() -> object:
+    """
+    That method will get all informations in the database at the table person-info-account and will do a list to return.
+    :return: It will return a json object with page status page.
+    """
+
     db.create_all()
     users = []
 
