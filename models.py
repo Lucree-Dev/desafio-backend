@@ -74,7 +74,6 @@ class FriendModel(db.Model):
     def __repr__(self):
         return '' % self.user_id
 
-
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
