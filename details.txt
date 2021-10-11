@@ -1,1 +1,5 @@
-
+clone the repository
+Access the project folder
+Run the code:
+    FLASK_APP=app.py flask run --host=0.0.0.0 --port=8080 ( or you can run the app.py in your IDE )
+Access the webpage and verify its working.
