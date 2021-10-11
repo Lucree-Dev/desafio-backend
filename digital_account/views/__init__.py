@@ -1,0 +1,1 @@
+from digital_account.views import main
