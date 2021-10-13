@@ -17,7 +17,7 @@ def auth_required(f):
     def decorated(*args, **kwargs):
         auth = request.authorization
         user = UserModel.query.filter_by(username=auth.username, password=auth.password).first()
-        if not user:# or not UserModel.verify_password(user.password, auth.password):
+        if not user:
             return make_response('request failed')
         return f(*args, **kwargs)   
     return decorated
