@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\FriedRepository;
+use App\Repository\FriendRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=FriedRepository::class)
+ * @ORM\Entity(repositoryClass=FriendRepository::class)
  */
-class Fried
+class Friend
 {
     /**
      * @ORM\Id
