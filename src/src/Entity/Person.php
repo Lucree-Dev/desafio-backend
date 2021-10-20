@@ -45,7 +45,7 @@ class Person
     private $username;
 
     /**
-     * @ORM\OneToMany(targetEntity=Fried::class, mappedBy="friend", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Friend::class, mappedBy="friend", orphanRemoval=true)
      */
     private $friends;
 
@@ -122,14 +122,14 @@ class Person
     }
 
     /**
-     * @return Collection|Fried[]
+     * @return Collection|Friend[]
      */
     public function getFriends(): Collection
     {
         return $this->friends;
     }
 
-    public function addFriend(Fried $friend): self
+    public function addFriend(Friend $friend): self
     {
         if (!$this->friends->contains($friend)) {
             $this->friends[] = $friend;
@@ -139,7 +139,7 @@ class Person
         return $this;
     }
 
-    public function removeFriend(Fried $friend): self
+    public function removeFriend(Friend $friend): self
     {
         if ($this->friends->removeElement($friend)) {
             // set the owning side to null (unless already changed)

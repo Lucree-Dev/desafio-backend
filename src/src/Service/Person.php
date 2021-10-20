@@ -1,9 +1,10 @@
 <?php
 namespace App\Service;
 
+use App\Entity\Friend;
 use App\Entity\Person as EntityPerson;
+use App\Repository\FriendRepository;
 use App\Repository\PersonRepository;
-use Doctrine\Common\Persistence\ObjectManager;
 
 class Person 
 {
@@ -12,10 +13,15 @@ class Person
      * */
     private $repository;
 
-    public function __construct(PersonRepository $repo)
+    /** 
+     * @var FriendRepository
+     */
+    private $friendRepository;
+
+    public function __construct(PersonRepository $repo, FriendRepository $friendRepository)
     {
-        
         $this->repository = $repo;
+        $this->friendRepository = $friendRepository;
     }
 
     /**
@@ -48,8 +54,15 @@ class Person
         return $this->repository->create($person);
     }
 
-    public function get($id)
+    public function get($id): EntityPerson
     {
+        return $this->repository->find($id);
+    }
 
+    public function createFrienship(EntityPerson $person, EntityPerson $person2): Friend
+    {
+        $friend = new Friend();
+        $friend->setPerson($person)->setFriend($person2);
+        return $this->friendRepository->create($friend);
     }
 }

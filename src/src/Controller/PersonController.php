@@ -56,4 +56,24 @@ class PersonController extends AbstractController
         );
         return $response;
     }
+
+    /** 
+     * @Route("/person/{id}/friend", name="person_create_friend", methods="POST")
+     */
+    public function createFriend($id, Request $request)
+    {
+        $data = $request->request->all();
+        $person1 = $this->service->get($id);
+        $person2 = $this->service->create($data);
+        $friend = $this->service->createFrienship($person1, $person2);
+
+        $response = new JsonResponse();
+        $response->setContent(
+            $this->serializer->serialize(
+                $friend,
+                'json'
+            )
+        );
+        return $response;
+    }
 }
