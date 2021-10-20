@@ -35,7 +35,7 @@ class Card
     /**
      * @ORM\Column(type="string", length=4)
      */
-    private $expity_yyyy;
+    private $expiry_yyyy;
 
     /**
      * @ORM\Column(type="string", length=3)
@@ -43,9 +43,15 @@ class Card
     private $security_code;
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="date", length=10)
      */
     private $date;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Person::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $owner;
 
     public function getId(): ?int
     {
@@ -88,15 +94,14 @@ class Card
         return $this;
     }
 
-    public function getExpityYyyy(): ?string
+    public function getExpryYyyy(): ?string
     {
-        return $this->expity_yyyy;
+        return $this->expiry_yyyy;
     }
 
-    public function setExpityYyyy(string $expity_yyyy): self
+    public function setExpiryYyyy(string $expity_yyyy): self
     {
-        $this->expity_yyyy = $expity_yyyy;
-
+        $this->expiry_yyyy = $expity_yyyy;
         return $this;
     }
 
@@ -112,15 +117,33 @@ class Card
         return $this;
     }
 
-    public function getDate(): ?string
+    public function getDate(): \DateTime
     {
         return $this->date;
     }
 
-    public function setDate(string $date): self
+    public function setDate(\DateTime $date): self
     {
         $this->date = $date;
 
+        return $this;
+    }
+
+    /**
+     * Get the value of owner
+     */ 
+    public function getOwner(): Person
+    {
+        return $this->owner;
+    }
+
+    /**
+     * Set the value of owner
+     * @return  self
+     */ 
+    public function setOwner(Person $owner): self
+    {
+        $this->owner = $owner;
         return $this;
     }
 }
