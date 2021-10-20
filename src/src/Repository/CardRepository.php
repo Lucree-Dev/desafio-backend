@@ -47,4 +47,10 @@ class CardRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function create(Card $card)
+    {
+        $this->getEntityManager()->persist($card);
+        $this->getEntityManager()->flush();
+        return $card;
+    }
 }
