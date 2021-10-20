@@ -5,14 +5,13 @@ use App\Entity\Person as EntityPerson;
 use App\Repository\PersonRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 
-
 class Person 
 {
-    private $objectManager;
     /** 
      * @var PersonRepository 
      * */
     private $repository;
+
     public function __construct(PersonRepository $repo)
     {
         
