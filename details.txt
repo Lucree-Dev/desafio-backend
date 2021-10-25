@@ -1,1 +1,9 @@
+Feito em php utilizando symfony 5
 
+Ambiente Docker criado na pasta docker.
+Para iniciar entrar no diretório docker e executar
+
+docker-compose up -d
+
+Criado um arquivo postman com exemplos na raiz
+sy.postman_collection.json
