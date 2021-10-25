@@ -1,0 +1,274 @@
+{
+	"info": {
+		"_postman_id": "474bada4-3248-4e67-a0d8-b0943f048425",
+		"name": "sy5",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "card",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Maria",
+									"type": "text"
+								},
+								{
+									"key": "pan",
+									"value": "1234123412341234",
+									"type": "text"
+								},
+								{
+									"key": "expiry_mm",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "expiry_yyyy",
+									"value": "2021",
+									"type": "text"
+								},
+								{
+									"key": "security_code",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "date",
+									"value": "2021-10-19",
+									"type": "text"
+								},
+								{
+									"key": "owner",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/card",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"card"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "João",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/card",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"card"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "person",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "João",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "da Silva",
+									"type": "text"
+								},
+								{
+									"key": "birthday",
+									"value": "1990-01-10",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "joao",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/person",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"person"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "João",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/person",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"person"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "transfer",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "friend_id",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "billing_card[card_id]",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "total_to_transfer",
+									"value": "100",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/transfer",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "localhost/bank-statement",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bank-statement"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list by user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "localhost/bank-statement/1",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bank-statement",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
