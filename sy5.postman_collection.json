@@ -178,6 +178,97 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "transfer",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "friend_id",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "billing_card[card_id]",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "total_to_transfer",
+									"value": "100",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/transfer",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "localhost/bank-statement",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bank-statement"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list by user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "localhost/bank-statement/1",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"bank-statement",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
