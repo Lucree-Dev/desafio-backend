@@ -1,1 +1,16 @@
+Para executar o projeto precisarão:
 
+-Clonar este repositório
+
+-Uma vez dentro do repositório, criar um container docker através do comando:
+*sudo docker build -t desafio-backend .
+
+-Ativar o servidor através do comando:
+*sudo docker run -it -p 5000:5000 desafio-backend
+
+-Fazer os testes da Api através de alguma ferramenta de testes, como Insomnia ou Postman
+
+-A Única requisição que está livre de autenticação é a post_person, uma vez que um usuário é criado, será possível utilizar seu username e password para obter acesso aos outros métodos
+
+Descrição:
+	O desafio foi feito em Python, utilizando o framework flask com auxílio de algumas bibliotecas como Marshmallow e SqlAlchemy
