@@ -1,1 +1,9 @@
+Para fazer esta API utilizei
 
+Python 3.8.6
+Django 3.2.9
+Django Rest Framework 3.12.4
+Banco de dados: SQL Lite(padrão DRF)
+Markdown 3.3.6
+
+Para todas as páginas inseri um Tokien JWT e fiz os testes usando POSTMAN, deixei uma View na parte de friends para que eles possam ser inseridos
