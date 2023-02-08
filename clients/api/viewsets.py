@@ -1,13 +1,20 @@
 from rest_framework.generics import CreateAPIView
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from clients.api.serializers import ClientSerializer
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from clients.models import Client
 from rest_framework.response import Response
 from datetime import datetime
+from rest_framework.authentication import TokenAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class CreateClientViewset(CreateAPIView):
     serializer_class = ClientSerializer
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JWTAuthentication, )
+    
     http_method_names = [ "post" ]
     _user_model = get_user_model()
 
@@ -48,3 +55,11 @@ class CreateClientViewset(CreateAPIView):
         client.save()
 
         return Response(data={"message": "Cliente cadastrado com sucesso."}, status=201)
+
+
+class ClientFriendsViewset(APIView):
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, )
+
+    def get(self, request):
+        pass
