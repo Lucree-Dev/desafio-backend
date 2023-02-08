@@ -20,7 +20,6 @@ class LoginViewset(CreateAPIView):
 
         if user:
             token = self.__generate_jwt(user=user)
-            # token = Token.objects.get_or_create(user=user)
-            return Response({
-                "token": token
-            })
+            return Response({ "token": token })
+        
+        return Response({"message": "Nenhum usuário encontrado."}, status=400)
