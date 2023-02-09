@@ -1,1 +1,65 @@
+Tecnologias utilizadas:
+- Django, na versão 4.1.6
+- Django REST, para criar os endpoints da API
+- MySQL como SGBD
+- Autenticação JWT
 
+Requisitos:
+- Ter o Python 3.8 instalado na máquina (não realizei testes com versões diferentes)
+- Ter o MySQL 8 instalado na máquina
+
+
+#1 - CRIAR VENV
+Antes de rodar o projeto, é necessário que você crie uma virtual environment para rodar a aplicação. Para isso, rode o comando "python -m venv venv"
+Depois disso, é necessário ativar a venv, então rode:
+    - No Linux: "source /venv/bin/activate"
+    - No Windows: "venv\Scripts\activate"
+
+
+#2 - Criar um arquivo com as variáveis de ambiente
+O projeto utiliza variáveis de ambiente para configurar o sistema. Estas variáveis são adicionadas à um arquivo .env por questão de segurança.
+Portanto, você deve criar um arquivo .env e adicionar estas variáveis de acordo com a configuração da sua máquina.
+
+Você pode encontrar um exemplo de arquivo .env em .env-example.
+
+
+#3 - Configurar o banco de dados
+Para rodar, você deve ir na pasta raiz do projeto e rodar o comando: "python manage.py makemigrations".
+Este comando criará as migrations iniciais da aplicação.
+
+Após isso, você deve aplicar as migrations. Para isso, rode o comande "python manage.py migrate".
+
+
+#4 - Rodar o projeto
+Depois de configurar o banco de dados, basta apenas rodar o projeto com o comando "python manage.py runserver".
+
+
+#5 - Cadastrar um usuário
+Para cadastrar um usuário, acesse o endpoint account/person/ da API. A requisição é um método POST onde você passa as seguintes informações:
+{
+   "first_name":"Matheus",
+   "last_name": "Espionola",
+   "birthday": "1990-12-23",
+   "password": "senha123",
+   "username": "matheus.espionola",
+   "email": "matheus.espionola@teste.com"
+}
+
+
+#6 - Login
+Acesse ter criado um usuário, você deve fazer o login na aplicação para poder acessar os demais endpoints (você precisa passar o token JWT no cabeçalho das requisições.).
+Portanto, acesse o enpoint auth/login/ da API. É um método POST que recebe as seguintes informações:
+{
+    "username": "matheus.espionola",
+    "password": "Anch0rage"
+}
+
+
+
+## OBS: Para mais informações sobre os endpoints da API, baixe o arquivo do link abaixo e exporte a coleção do postman.
+https://drive.google.com/file/d/1rsdznsIlhjcxzOB30OSwjyYOrB3dCu9x/view?usp=share_link
+
+Aqui vocês podem encontrar exemplos com todos os endpoints criados. Além disso, já facilitei o processo de passar o token nas requisições. Após o login, o token é salvo em uma variável da coleção e é passado para os demais endpoints que necessitam de Autenticação.
+
+
+Isso é tudo. Um abraço a todos!
