@@ -5,7 +5,7 @@ from datetime import datetime
 
 class CardSerializer(ModelSerializer):
     card_id = serializers.CharField(source="id", allow_null=True)
-    date = serializers.SerializerMethodField(read_only=True)
+    date = serializers.ReadOnlyField()
 
     def get_date(self, obj): 
         created_at = None

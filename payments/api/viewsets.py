@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 from django.db.models import Q
-from payments.api.serializers import CreateTransferSerializer
+from payments.api.serializers import CreateTransferSerializer, ListTransfersSerializer
 from payments.models import Transfers
 from cards.models import ClientCard
 from clients.models import Client
@@ -44,9 +44,27 @@ class TransferViewset(CreateAPIView):
 
 
             
-
-
 class ListTransfersViewset(ModelViewSet):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (JWTAuthentication, )
     http_method_names = [ "get" ]
+    serializer_class = ListTransfersSerializer
+
+    def list(self, request, *args, **kwargs):
+        transfers = self.__get_transfers(request.user)
+        serializer = self.get_serializer(transfers, many=True)
+        return Response(serializer.data, status=200)
+
+    def retrieve(self, request, id):
+        transfers = self.__get_transfers(request.user)
+
+        if id:
+            transfers = transfers.filter(friend__id=id)
+
+        serializer = self.get_serializer(transfers, many=True)
+        return Response(serializer.data, status=200)
+
+    def __get_transfers(self, user):
+        client = Client.objects.filter(user__exact=user).first()
+        transfers = Transfers.objects.filter(client_card__client__exact=client)
+        return transfers
