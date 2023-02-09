@@ -8,11 +8,14 @@ class CardSerializer(ModelSerializer):
     date = serializers.SerializerMethodField(read_only=True)
 
     def get_date(self, obj): 
-        if "created_at" in obj: 
-            created_at = obj["created_at"]
-            return datetime.strftime(created_at, "%d/%m/%Y")
+        created_at = None
 
-        return None
+        if isinstance(obj, object) and hasattr(obj, "created_at"):
+            created_at = obj.created_at
+        elif isinstance(obj, dict) and "created_at" in obj: 
+            created_at = obj["created_at"]
+      
+        return created_at
 
     class Meta:
         model=Card

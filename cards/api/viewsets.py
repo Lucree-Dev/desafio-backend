@@ -22,7 +22,8 @@ class CreateCardViewset(CreateAPIView):
                 pan = body["pan"],
                 expiry_mm = body["expiry_mm"],
                 expiry_yyyy = body["expiry_yyyy"],
-                security_code = body["security_code"]
+                security_code = body["security_code"],
+                # balance = body["balance"]
             )
             client = Client.objects.get(user__exact=request.user)
             card_client = ClientCard.objects.create(card=card, client=client)
@@ -35,7 +36,13 @@ class CreateCardViewset(CreateAPIView):
 class ListCardsViewset(ListAPIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (JWTAuthentication, )
-    http_method_names = [ "post" ]
+    http_method_names = [ "get" ]
 
     def list(self, request, *args, **kwargs):
-        pass
+        client = Client.objects.get(user__exact=request.user)
+        
+        queryset = ClientCard.objects.filter(client__exact=client)
+        cards = list(map(lambda x: x.card, queryset))
+        serializer = CardSerializer(cards, many=True)
+
+        return Response(serializer.data, status=200)

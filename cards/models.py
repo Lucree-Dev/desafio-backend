@@ -8,6 +8,7 @@ class Card(BaseModel):
     expiry_mm = models.CharField(max_length=2, blank=False, null=False, default="")
     expiry_yyyy = models.CharField(max_length=4, blank=False, null=False, default="")
     security_code = models.CharField(max_length=3, blank=False, null=False, default="")
+    # balance = models.PositiveBigIntegerField(blank=False, null=False, default=0)
 
     def __str__(self) -> str:
         return "{} - {}".format(self.title, self.pan)
