@@ -1,1 +1,36 @@
+- Linguagem e framework
+Para a realização desse projeto foi usada a Linguagem Python como solicitado e para a criação da API foi usado o Django REST framework. Como banco de dados foi usado o SQLite.
+
+- Sistema e IDE
+
+Esse projeto foi desenvolvido e executado em um equipamento usando a distribuição Ubuntu 22.04 e a IDE Visual Studio Code versão 1.75.0
+
+- Instruções para execução:
+
+O projeto pode ser executado através do Docker. Para tal procedimento se faz necessário ter o Docker e o Docker Compose instalados no computador que irá executar a aplicação. Basta executar os seguintes comandos (estando no diretório do projeto, desafio-backend):
+
+docker-compose build
+docker-compose up
+
+- Acesso às requisições
+
+As urls para acesso são:
+
+    "account/person": "http://localhost:8000/account/person/",
+    "account/friends": "http://localhost:8000/account/friends/",
+    "account/card": "http://localhost:8000/account/card/",
+    "account/cards": "http://localhost:8000/account/cards/",
+    "account/transfer": "http://localhost:8000/account/transfer/",
+    "account/bank-statement": "http://localhost:8000/account/bank-statement/"
+
+- Credenciais para acesso
+
+Já existe um usuário para ser usado na altenticação:
+    username: desafio
+    password: desafio
+
+- Conclusão
+
+Embora tenha tido algumas dificuldades para entender o modelo de dados (por isso os dois últimos itens talvez não estejam funcionando como deveria), mas gostei do desafio, pois me ajudou a entender quais são meus pontos fortes e minhas deficiências.
+Agradeço pela oportunidade e espero fazer parte dessa equipe, senão hoje, mas quem sabe num futuro próximo. :)
 
