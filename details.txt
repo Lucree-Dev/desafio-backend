@@ -1,1 +1,19 @@
+---- DESAFIO BACKEND ----
 
+Tecnologias:
+
+- Linguagem Python
+- Framework FastAPI
+- SqlAlchemy (ORM)
+- Pydantic (Schemas/Validações)
+- Banco de dados: Mysql
+
+Instruções para rodar o projeto
+
+Estrutura:
+
+- Banco: Mysql
+    - Para criar a estrutura do banco de dados, rodar os comandos que estão contidos no arquivo: db_desafio.sql
+    - Preencher o arquivo .env.example com as informações referentes ao banco de dados, depois renomea-lo para .env
+
+- Após o clone do repositório, rodar o seguinte comando: pip install -r requirements.txt. Este arquivo contém todas as dependências para o projeto rodar.
