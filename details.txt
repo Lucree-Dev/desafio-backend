@@ -1,1 +1,6 @@
-
+- versao do python utilizada 3.9.7
+- ORM foi utilizado o SQLAlchemy e de framework o Flask
+- API conta com autenticacao
+- para rodar basta um 'pip install -r requirements.txt' e depois um 'flask run'
+- banco de dados padrao esta SQLite porem alterando a URL de banco de dados ele altera automaticamente para qualquer banco
+- as tabelas do banco de dados sao criadas automaticamente pelo flask
