@@ -1,0 +1,3 @@
+
+Adicionar ao README (ou criar um arquivo de instruções) dizendo para instalar as dependências para o projeto.
+Ex: Migrate
