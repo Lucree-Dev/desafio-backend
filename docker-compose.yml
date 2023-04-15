@@ -4,7 +4,7 @@ services:
     image: acim/go-reflex
     environment:
       - RACE_DETECTOR=1
-      - BUILD_ARGS=./main.go
+      - BUILD_ARGS=./cmd/api/main.go
     container_name: lucree-challenge
     ports:
       - 9191:9191

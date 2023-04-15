@@ -1,0 +1,1 @@
+ALTER TABLE IF EXISTS people DROP CONSTRAINT IF EXISTS unique_username

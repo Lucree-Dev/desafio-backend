@@ -1,4 +1,4 @@
-package api
+package handlers
 
 import (
 	"net/http"
@@ -7,6 +7,6 @@ import (
 )
 
 // healthcheck
-func (s *server) healthcheck(c echo.Context) error {
+func Healthcheck(c echo.Context) error {
 	return c.String(http.StatusOK, "OK")
 }
