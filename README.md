@@ -1,22 +1,74 @@
-![Lucree](https://lucreestatic.s3.us-east-2.amazonaws.com/dashboard/assets/img/brand/logo-lucree-horizontal.png)
+# Rest API Python usando Django com Docker Composer
 
-# Desafio Backend
+[![Python required version: 3.7.3](https://img.shields.io/badge/python-3.7.3-blue.svg?style=flat-square)](https://www.python.org/downloads/release/python-373)
+[![Documentation](https://img.shields.io/badge/docs-0.0.1-orange.svg?style=flat-square)](https://google.com)
 
-O desafio consiste em criar uma API REST para uma Conta Digital, onde o usuário poderá realizar pagamentos para seus amigos e adicionar cartões de crétido, que será consumida por um aplicativo (Android e iOS). Onde o usuário irá cadastrar/listar/editar/apagar um cartão quando desejar e transferir e listar o extrato de pagamentos.
+Estee projeto foi criado por [Eneas Rodrigues](https://github.com/EneasJr-Rodrigues).
+Pode entrar em contato com ele para mais instruções
 
-O candidato deve dar **fork** neste repositório e após o termino do desenvolvimento, realizar um **pull request** para análise do time.
+## ⚠️ Atenção!
 
-O candidato deve realizar a implementação buscando utilizar a linguagem Python ou Go. Demais Frameworks/Libs ficam por conta do candidato.
+Este projeto precisa de ter instalado o docker engineer e o docker compose para rodar
+Se houver alguma atualização nesta lib, a versão deve ser atualizada neste arquivo:)
 
-Deverá informar quais tecnologias foram usadas, como instalar, rodar e efetuar os acessos no arquivo [`details.txt`](https://github.com/Lucree-Dev/desafio-backend/blob/master/details.txt) (se necessário) para análise do desafio.
+Por favor siga o passo a passo do link a seguir: [docker](https://docs.docker.com/engine/install/ubuntu/) and [docker-compose](https://docs.docker.com/compose/install/) para instalar.
 
-### Extra
-- Autenticação nas requisições
-- Utilizar Docker
+## Recursos adicionais
 
+* Você pode utilizar uma API chamada de [TablePlus](https://tableplus.com/blog/2019/10/tableplus-linux-installation.html) para visizar as tabelas e os dados com mais facilidade
+* Requerimento: Precisa de ter o [postgresql](https://www.postgresql.org/download/) instalado na maquina
+* O [Postman](https://www.postman.com/downloads/) pode ler e efetuar as transações listadas da API
 
-### POST `/account/person`
-Esse método deve receber um novo usuário e inseri-lo em um banco de dados para ser consumido pela própria API.
+## API Documentação com Swagger UI Django
+
+* Acesse a URL abaixo para poder ver a documentação do código fonte gerado pelo Swagger
+* **requerimento**: As tabelas precisam de estar populadas para gerar a documentação, por isso é necessário utilizar os procedimentos abaixo para depois abrir a url do swagger
+
+```shell
+localhost:8000/api/schema/docs/#/
+```
+
+## Instruções básicas:
+
+* abra o seu terminal e digite os comandos a seguir:
+* com o terminal no diretorio raiz do projeto
+  
+```shell
+sudo chmod +x build.sh run.sh stop.sh
+```
+
+## Build no projeto
+
+* abra o seu terminal e digite os comandos a seguir:
+* com o terminal no diretorio raiz do projeto
+* comando bash
+  
+```shell
+./build.sh
+```
+
+## Rodar o sistema
+
+* abra o seu terminal e digite os comandos a seguir:
+* com o terminal no diretorio raiz do projeto
+* comando bash
+
+```shell
+./run.sh ## para startar e subir o server
+./stop.sh ## para parar os containers
+```
+
+## Utilização do sistema:
+
+* para incluir usuário na tabela de usuarios, utilize a URL abaixo:
+* Pode utilizar o browser ou o postman para as transações
+
+```shell
+localhost:8000/personal/create_person
+```
+
+* Utilize um formato JSON para incluir o usuário no banco de dados, segue o exemplo abaixo:
+
 ```json
 {
    "first_name":"João",
@@ -27,203 +79,133 @@ Esse método deve receber um novo usuário e inseri-lo em um banco de dados para
    "user_id": "70c881d4a26984ddce795f6f71817c9cf4480e79"
 }
 ```
-| Campo       | Tipo   |
-|-------------|--------|
-| first_name  | String |
-| last_name   | String |
-| birthday    | String |
-| password    | String |
-| username    | String |
 
-### GET `/account/friends`
-Esse método da API deve retornar o seguinte JSON com os amigos do usuário
-```json
-[
-  {
-   "first_name":"João",
-   "last_name": "das Neves",
-   "birthday": "1991-09-91",
-   "username": "joao_das_neves",
-   "user_id": "70c881d4a26984ddce795f6f71817c9cf4480e79"
-  },
-  {
-   "first_name":"João",
-   "last_name": "das Neves",
-   "birthday": "1991-09-91",
-   "username": "joao_das_neves",
-   "user_id": "70c881d4a26984ddce795f6f71817c9cf4480e79"
-  },
-  {
-   "first_name":"João",
-   "last_name": "das Neves",
-   "birthday": "1991-09-91",
-   "username": "joao_das_neves",
-   "user_id": "70c881d4a26984ddce795f6f71817c9cf4480e79"
-  }
-]
+### GET para visualizar o resultado utilize a URL abaixo:
+
+```shell
+localhost:8000/personal/_persons
 ```
 
-| Campo       | Tipo   |
-|-------------|--------|
-| first_name  | String |
-| last_name   | String |
-| birthday    | String |
-| username    | String |
+* clique no botão get do framework
 
-### POST `/account/card`
-Esse método deve receber um cartão novo e inseri-lo em um banco de dados para ser consumido pela própria API.
-```json
-{
-   "card_id": "70c881d4a26984ddce795f6f71817c9cf4480e79"
-   "title": "Cartão 1",
-   "pan": "5527952393064634",
-   "expiry_mm": "03",
-   "expiry_yyyy": "2022",
-   "security_code": "656",
-   "date":"26/11/2015"
-}
-```
-| Campo       | Tipo   |
-|-------------|--------|
-| title       | String |
-| pan         | String |
-| expiry_mm   | String |
-| expiry_yyy  | String |
-| security_code | String |
-| date        | String |
-
-
-### GET `/account/cards`
-Esse método da API deve retornar o seguinte JSON com os cartões cadastrados pelo usuário
-```json
-[
-  {
-    "title":"Cartão 1",
-    "pan": "5527952393064634",
-    "expiry_mm": "03",
-    "expiry_yyyy": "2022",
-    "security_code": "656",
-    "date":"26/11/2015"
-  },
-  {
-     "title":"Cartão 2",
-     "pan": "5527952393064634",
-     "expiry_mm": "03",
-     "expiry_yyyy": "2022",
-     "security_code": "656",
-     "date":"26/11/2015"
-  },
-  {
-     "title":"Cartão 2",
-     "pan": "5527952393064634",
-     "expiry_mm": "03",
-     "expiry_yyyy": "2022",
-     "security_code": "656",
-     "date":"26/11/2015"
-  }
-]
+### PUT para fazer o update desse usuário:
+  
+```shell
+localhost:8000/personal/update_person/{id}
 ```
 
-| Campo       | Tipo   |
-|-------------|--------|
-| title       | String |
-| pan         | String |
-| expiry_mm   | String |
-| expiry_yyy  | String |
-| security_code | String |
-| date        | String |
+### DELETE para deletar um usuário:
 
+```shell
+localhost:8000/personal/delete_person/{id}
+```
 
+* Todas essas modificações podem ser vistas no primeiro link (GET) para visualizar os resultados de cada uma das transações
 
-Após o usuário adicionar todos os cartões e localizar seus amigos, ele poderá realizar uma transferência.
-Para isso, você precisará fazer o método `transfer` na sua API.
+No total são 6 tabelas que podem ser populadas e transacionadas conforme as instruções acima, segue abaixo a lista de cada uma das tabelas, lembrando que para acessalas são todas através dos links ['localhost:8000/] localhost:8000/tabela/tipo_transação/id
 
-### POST `/account/transfer`
-Esse método irá receber os dados da compra, junto com os dados do usuário.
-```json
-{
-   "friend_id": "70c881d4a26984ddce795f6f71817c9cf4480e79",
-   "total_to_transfer": 100,
-   "billing_card": {
-      "card_id": "70c881d4a26984ddce795f6f71817c9cf4480e79"
-   }
-}
+```shell
+localhost:8000/
+
+## Tabela
+personal/
+friend/
+card/
+transfer/
+billing/
+bank/
+
+## tipo de transação
+### Tabela de usuário
+_persons # GET leitura de todos os dados da tabela (formato json)
+create_person # POST - criacao de um novo usuario na tabela
+read_person/{id} # GET - leitura de usuario por id
+update_person/{id} # PUT - atualização de um registro por ID banco
+delete_person/{id} # DELETE - deletar um usuario especifico pelo ID banco
+
+### Tabela de Friends
+_friends # GET leitura de todos os dados da tabela (formato json)
+create_friend # POST - criacao de um novo usuario na tabela
+read_friend/{id} # GET - leitura de usuario por id
+update_friend/{id} # PUT - atualização de um registro por ID banco
+delete_friend/{id} # DELETE - deletar um usuario especifico pelo ID banco
+
+### Tabela de cartões
+_cards # GET leitura de todos os dados da tabela (formato json)
+create_card # POST - criacao de um novo card na tabela de cartões
+read_card/{id} # GET - leitura de card por id
+update_card/{id} # PUT - atualização de um registro por ID banco
+delete_card/{id} # DELETE - deletar um card especifico pelo ID banco
+
+### Tabela de billing
+_billing # GET leitura de todos os dados da tabela (formato json)
+create_billing # POST - criacao de um novo card na tabela de cartões
+read_billing/{id} # GET - leitura de card por id
+update_billing/{id} # PUT - atualização de um registro por ID banco
+delete_billing/{id} # DELETE - deletar um card especifico pelo ID banco
+
+### Tabela de transferencias
+_transfer # GET leitura de todos os dados da tabela (formato json)
+create_transfer  # POST - criacao de uma nova transferencia na tabela de transferencias
+read_transfer/{id} # GET - leitura de transferencia por id
+update_transfer/{id} # PUT - atualização de um registro por ID banco
+delete_transfer/{id} # DELETE - deletar uma transferencia especifica pelo ID banco
+
+### Tabela banco
+_bank # GET leitura de todos os dados da tabela (formato json)
+create_bank # POST - criacao de um novo registro bancario na tabela de bank
+read_bank/{id} # GET - leitura dos dados bancarios por id
+update_bank/{id} # PUT - atualização de um registro por ID banco
+delete_bank/{id} # DELETE - deletar uma registro especifico pelo ID banco
+
 
 ```
 
-+ Transfer
+### Para facilitar segue todos os links editaveis como exemplo:
 
-| Campo        | Tipo       |
-|--------------|------------|
-| friend_id    | String     |
-| total_to_pay | int (in cents)|
-| billing_card  | CreditCard |
+```shell
+## tabela usuarios com as transacoes de cada nivel
+localhost:8000/personal/_persons
+localhost:8000/personal/create_person
+localhost:8000/personal/read_person/1
+localhost:8000/personal/update_person/1
+localhost:8000/personal/delete_person/1
 
-+ BillingCard
+## tabela friends com as transacoes de cada nivel
+localhost:8000/friend/_friends
+localhost:8000/friend/create_friend
+localhost:8000/friend/read_friend/1
+localhost:8000/friend/update_friend/1
+localhost:8000/friend/delete_friend/1
 
-| Campo            | Tipo   |
-|------------------|--------|
-| card_id          | String |
+## tabela cartões com as transacoes de cada nivel
+localhost:8000/card/_cards
+localhost:8000/card/create_card
+localhost:8000/card/read_card/1
+localhost:8000/card/update_card/1
+localhost:8000/card/delete_card/1
 
+## tabela billing com as transacoes de cada nivel
+localhost:8000/billing/_billing
+localhost:8000/billing/create_billing
+localhost:8000/billing/read_billing/1
+localhost:8000/billing/update_billing/1
+localhost:8000/billing/delete_billing/1
 
-### GET `/account/bank-statement`
-Esse método deve retornar todas as transferencias realizadas entre os amigos na API
-```json
-[
-   {
-      "user_id":"70c881d4a26984ddce795f6f71817c9cf4480e79",
-      "friend_id":"70c881d4a26984ddce795f6f71817c9cf4480e79",
-      "value":1234,
-      "date":"19/08/2016",
-      "from_card":"70c881d4a26984ddce795f6f71817c9cf4480e79"
-   },
-   {
-      "user_id":"70c881d4a26984ddce795f6f71817c9cf4480e79",
-      "friend_id":"70c881d4a26984ddce795f6f71817c9cf4480e79",
-      "value":1234,
-      "date":"19/08/2016",
-      "from_card":"70c881d4a26984ddce795f6f71817c9cf4480e79"
-   },
-   {
-      "user_id":"70c881d4a26984ddce795f6f71817c9cf4480e79",
-      "friend_id":"70c881d4a26984ddce795f6f71817c9cf4480e79",
-      "value":1234,
-      "date":"19/08/2016",
-      "from_card":"70c881d4a26984ddce795f6f71817c9cf4480e79"
-   },
-]
+## tabela transferencias com as transacoes de cada nivel
+localhost:8000/transfer/_transfer
+localhost:8000/transfer/create_transfer
+localhost:8000/transfer/read_transfer/1
+localhost:8000/transfer/update_transfer/1
+localhost:8000/transfer/delete_transfer/1
+
+## tabela banco com as transacoes de cada nivel
+localhost:8000/bank/_bank
+localhost:8000/bank/create_bank
+localhost:8000/bank/read_bank/1
+localhost:8000/bank/update_bank/1
+localhost:8000/bank/delete_bank/1
 ```
-| Campo            | Tipo   |
-|------------------|--------|
-| user_id          | String |
-| friend_id        | String |
-| value            | int (in cents)    |
-| date             | String |
-| from_card        | String |
-
-### GET `/account/bank-statement/{usertId}`
-Esse método deve retornar todos as transferencias realizadas na API por um usuário específico
-```json
-[
-   {
-      "user_id":"70c881d4a26984ddce795f6f71817c9cf4480e79",
-      "friend_id":"70c881d4a26984ddce795f6f71817c9cf4480e79",
-      "value":1234,
-      "date":"19/08/2016",
-      "from_card":"70c881d4a26984ddce795f6f71817c9cf4480e79"
-   },
-   {
-      "user_id":"70c881d4a26984ddce795f6f71817c9cf4480e79",
-      "friend_id":"70c881d4a26984ddce795f6f71817c9cf4480e79",
-      "value":1234,
-      "date":"19/08/2016",
-      "from_card":"70c881d4a26984ddce795f6f71817c9cf4480e79"
-   },
-]
-```
-
-
-
 
 ---
 #### LICENSE
