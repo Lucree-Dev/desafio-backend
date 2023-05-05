@@ -1,0 +1,14 @@
+env: local
+
+application:
+  name: account-api
+  port: 8080
+  version: 0.0.1
+
+database:
+  account:
+    name: accountDb
+    host: localhost
+    port: 5432
+    user: root
+    password: admin
