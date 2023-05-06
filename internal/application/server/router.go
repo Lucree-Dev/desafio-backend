@@ -1,7 +1,7 @@
 package server
 
 import (
-	. "account/internal/application/handlers"
+	. "account/internal/application/controllers"
 
 	"github.com/labstack/echo/v4"
 )
