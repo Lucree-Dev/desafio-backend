@@ -1,7 +1,7 @@
-package handlers
+package controllers
 
 import (
-	"account/pkg/response"
+	"account/internal/application/response"
 
 	"github.com/labstack/echo/v4"
 )
