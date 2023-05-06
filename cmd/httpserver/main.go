@@ -7,49 +7,30 @@ package main
 // }
 
 import (
-	"context"
 	"fmt"
 
-	"github.com/go-pg/pg/v10"
+	"account/internal/infrastructure/repositories/config"
+	. "account/internal/infrastructure/repositories/entities"
 )
 
-type Person struct {
-	Id        int    `pg:"id"`
-	FirstName string `pg:"first_name"`
-	LastName  string `pg:"last_name"`
-	Birthday  string `pg:"birthday"`
-	Password  string `pg:"password"`
-}
-
 func main() {
-	opt, err := pg.ParseURL("postgres://postgres:admin@localhost:5432/accountDb?sslmode=disable") //TODO Puxar as infos de banco pelo arquivo application.yml
-	if err != nil {
-		panic(err)
-	}
 
-	db := pg.Connect(opt)
-
-	defer db.Close()
-
-	ctx := context.Background()
-
-	if err := db.Ping(ctx); err != nil {
-		panic(err)
-	}
+	conn := config.OpenConnection()
+	defer conn.Close()
 
 	person := &Person{
 		FirstName: "João",
 		LastName:  "joao@example.com",
-		Birthday:  "06/05/2023",
+		Birthday:  "2023-06-06",
 		Password:  "123456",
 	}
-	_, err = db.Model(person).Insert()
+	_, err := conn.Model(person).Insert()
 	if err != nil {
 		panic(err)
 	}
 
 	var persons []Person
-	err = db.Model(&persons).Select()
+	err = conn.Model(&persons).Select()
 	if err != nil {
 		panic(err)
 	}
