@@ -21,3 +21,12 @@ func NewPersonFull(Id int, FirstName, LastName, Birthday, Password string) *Pers
 		Password:  Password,
 	}
 }
+
+func NewPersonPartial(FirstName, LastName, Birthday, Password string) Person {
+	return Person{
+		FirstName: FirstName,
+		LastName:  LastName,
+		Birthday:  Birthday,
+		Password:  Password,
+	}
+}

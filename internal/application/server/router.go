@@ -9,7 +9,7 @@ import (
 func RegisterEndPoints() *echo.Echo {
 	e := echo.New()
 
-	e.GET("", Hello)
+	e.POST("/account/persons", CreatePerson)
 
 	return e
 }
