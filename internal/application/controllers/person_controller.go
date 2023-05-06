@@ -18,14 +18,16 @@ func CreatePerson(context echo.Context) error {
 	if err := context.Bind(person); err != nil {
 		return err
 	}
+
 	personCreated := personServicePort.Create(
 		domain.NewPersonPartial(
 			person.FirstName,
 			person.LastName,
-			person.Birthday,
 			person.Password,
+			person.Birthday,
 		),
 	)
+
 	context.Response().Header().Set("Location", strconv.Itoa(personCreated.Id))
 	return response.Created(context,
 		responseDTO.NewPerson(

@@ -18,8 +18,8 @@ func (p *PersonRepositoryPortImpl) Create(person domain.Person) *domain.Person {
 	personEntity := entities.NewPersonFull(
 		person.FirstName,
 		person.LastName,
-		person.Birthday,
 		person.Password,
+		person.Birthday,
 	)
 	_, err := conn.Model(personEntity).Insert()
 
@@ -31,8 +31,8 @@ func (p *PersonRepositoryPortImpl) Create(person domain.Person) *domain.Person {
 		personEntity.Id,
 		personEntity.FirstName,
 		personEntity.LastName,
-		personEntity.Birthday,
 		personEntity.Password,
+		personEntity.Birthday,
 	)
 
 	log.Info("ID gerado: " + strconv.Itoa(personEntity.Id))
