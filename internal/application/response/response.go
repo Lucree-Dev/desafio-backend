@@ -2,6 +2,7 @@ package response
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -42,7 +43,8 @@ func Ok(context echo.Context, i interface{}) error {
 	return success(context, http.StatusOK, i)
 }
 
-func Created(context echo.Context, i interface{}) error {
+func Created(context echo.Context, i interface{}, id int) error {
+	context.Response().Header().Set("Location", strconv.Itoa(id))
 	return success(context, http.StatusCreated, i)
 }
 

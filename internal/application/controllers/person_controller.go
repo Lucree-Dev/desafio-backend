@@ -6,7 +6,6 @@ import (
 	"account/internal/application/response"
 	"account/internal/domain"
 	"account/internal/domain/services"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -28,12 +27,12 @@ func CreatePerson(context echo.Context) error {
 		),
 	)
 
-	context.Response().Header().Set("Location", strconv.Itoa(personCreated.Id))
 	return response.Created(context,
 		responseDTO.NewPerson(
 			personCreated.FirstName,
 			personCreated.LastName,
 			personCreated.Birthday,
 		),
+		personCreated.Id,
 	)
 }
