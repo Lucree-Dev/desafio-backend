@@ -12,24 +12,24 @@ type Card struct {
 	CreationDate time.Time
 }
 
-func NewCardFull(Id int, Title, Pan, ExpireMonth, ExpireYear, SecurityCode string, CreationDate time.Time) *Card {
+func NewCardFull(id int, title, pan, expireMonth, expireYear, securityCode string, creationDate time.Time) *Card {
 	return &Card{
-		Id:           Id,
-		Title:        Title,
-		Pan:          Pan,
-		ExpireMonth:  ExpireMonth,
-		ExpireYear:   ExpireYear,
-		SecurityCode: SecurityCode,
-		CreationDate: CreationDate,
+		Id:           id,
+		Title:        title,
+		Pan:          pan,
+		ExpireMonth:  expireMonth,
+		ExpireYear:   expireYear,
+		SecurityCode: securityCode,
+		CreationDate: creationDate,
 	}
 }
 
-func NewCardPartial(Title, Pan, ExpireMonth, ExpireYear, SecurityCode string) Card {
+func NewCardPartial(title, pan, expireMonth, expireYear, securityCode string) Card {
 	return Card{
-		Title:        Title,
-		Pan:          Pan,
-		ExpireMonth:  ExpireMonth,
-		ExpireYear:   ExpireYear,
-		SecurityCode: SecurityCode,
+		Title:        title,
+		Pan:          pan,
+		ExpireMonth:  expireMonth,
+		ExpireYear:   expireYear,
+		SecurityCode: securityCode,
 	}
 }

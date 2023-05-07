@@ -13,26 +13,26 @@ type Card struct {
 	PersonId     int       `pg:"people_id"`
 }
 
-func NewCardFull(Id int, Title, Pan, ExpireMonth, ExpireYear, SecurityCode string, CreationDate time.Time) *Card {
+func NewCardFull(id int, title, pan, expireMonth, expireYear, securityCode string, creationDate time.Time) *Card {
 	return &Card{
-		Id:           Id,
-		Title:        Title,
-		Pan:          Pan,
-		ExpireMonth:  ExpireMonth,
-		ExpireYear:   ExpireYear,
-		SecurityCode: SecurityCode,
-		CreationDate: CreationDate,
+		Id:           id,
+		Title:        title,
+		Pan:          pan,
+		ExpireMonth:  expireMonth,
+		ExpireYear:   expireYear,
+		SecurityCode: securityCode,
+		CreationDate: creationDate,
 	}
 }
 
-func NewCardPartial(Title, Pan, ExpireMonth, ExpireYear, SecurityCode string, PersonId int) *Card {
+func NewCardPartial(title, pan, expireMonth, expireYear, securityCode string, personId int) *Card {
 	return &Card{
-		Title:        Title,
-		Pan:          Pan,
-		ExpireMonth:  ExpireMonth,
-		ExpireYear:   ExpireYear,
-		SecurityCode: SecurityCode,
-		CreationDate: time.Now(),
-		PersonId:     PersonId,
+		Title:        title,
+		Pan:          pan,
+		ExpireMonth:  expireMonth,
+		ExpireYear:   expireYear,
+		SecurityCode: securityCode,
+		CreationDate: time.Now().UTC(),
+		PersonId:     personId,
 	}
 }

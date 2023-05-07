@@ -15,12 +15,12 @@ func NewPerson() *Person {
 	return &Person{}
 }
 
-func NewPersonFull(FirstName, LastName, Password, UserName string, Birthday time.Time) *Person {
+func NewPersonFull(firstName, lastName, password, userName string, birthday time.Time) *Person {
 	return &Person{
-		FirstName: FirstName,
-		LastName:  LastName,
-		Birthday:  Birthday,
-		Password:  Password,
-		UserName:  UserName,
+		FirstName: firstName,
+		LastName:  lastName,
+		Birthday:  birthday,
+		Password:  password,
+		UserName:  userName,
 	}
 }

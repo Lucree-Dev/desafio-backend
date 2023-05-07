@@ -14,24 +14,24 @@ type Person struct {
 	UserName  string
 }
 
-func NewPersonFull(Id int, FirstName, LastName, Password, UserName string, Birthday time.Time) *Person {
+func NewPersonFull(id int, firstName, lastName, password, userName string, birthday time.Time) *Person {
 	return &Person{
-		Id:        Id,
-		FirstName: FirstName,
-		LastName:  LastName,
-		Birthday:  Birthday,
-		Password:  Password,
-		UserName:  UserName,
+		Id:        id,
+		FirstName: firstName,
+		LastName:  lastName,
+		Birthday:  birthday,
+		Password:  password,
+		UserName:  userName,
 	}
 }
 
-func NewPersonPartial(FirstName, LastName, Password, UserName string, Birthday time.Time) Person {
+func NewPersonPartial(firstName, lastName, password, userName string, birthday time.Time) Person {
 	return Person{
-		FirstName: FirstName,
-		LastName:  LastName,
-		Birthday:  Birthday,
-		Password:  Password,
-		UserName:  UserName,
+		FirstName: firstName,
+		LastName:  lastName,
+		Birthday:  birthday,
+		Password:  password,
+		UserName:  userName,
 	}
 }
 

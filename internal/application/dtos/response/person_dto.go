@@ -10,11 +10,11 @@ type Person struct {
 	UserName  string    `json:"username"`
 }
 
-func NewPerson(FirstName, LastName, UserName string, Birthday time.Time) Person {
+func NewPerson(firstName, lastName, userName string, birthday time.Time) Person {
 	return Person{
-		FirstName: FirstName,
-		LastName:  LastName,
-		Birthday:  Birthday,
-		UserName:  UserName,
+		FirstName: firstName,
+		LastName:  lastName,
+		Birthday:  birthday,
+		UserName:  userName,
 	}
 }
