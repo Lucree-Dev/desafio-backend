@@ -132,5 +132,23 @@ func GetCards(context echo.Context) error {
 		return response.NotFound(context, err.Error())
 	}
 
-	return response.Ok(context, cardDomains)
+	if cardDomains == nil {
+		return response.Ok(context, []responseDTO.Card{})
+	}
+
+	var cardDtos []responseDTO.Card
+	for _, cardDomain := range cardDomains {
+		cardDtos = append(
+			cardDtos,
+			responseDTO.NewCard(
+				cardDomain.Title,
+				cardDomain.Pan,
+				cardDomain.ExpireMonth,
+				cardDomain.ExpireYear,
+				cardDomain.Date,
+			),
+		)
+	}
+
+	return response.Ok(context, cardDtos)
 }

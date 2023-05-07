@@ -143,10 +143,6 @@ func (c *CardRepositoryPortImpl) FindAllByPersonId(personId int) []domain.Card {
 		panic(err)
 	}
 
-	if cardEntities == nil {
-		return []domain.Card{}
-	}
-
 	var cardDomains []domain.Card
 	for _, cardEntity := range cardEntities {
 		cardDomains = append(
