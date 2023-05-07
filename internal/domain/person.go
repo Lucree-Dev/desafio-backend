@@ -14,10 +14,6 @@ type Person struct {
 	UserName  string
 }
 
-func NewPerson() *Person {
-	return &Person{}
-}
-
 func NewPersonFull(Id int, FirstName, LastName, Password, UserName string, Birthday time.Time) *Person {
 	return &Person{
 		Id:        Id,

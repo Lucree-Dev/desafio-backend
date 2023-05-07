@@ -7,9 +7,11 @@ import (
 )
 
 func RegisterEndPoints() *echo.Echo {
+	basePath := "/account"
 	e := echo.New()
 
-	e.POST("/account/persons", CreatePerson)
+	e.POST(basePath+"/persons", CreatePerson)
+	e.POST(basePath+"/persons/:personId/cards", CreateCard)
 
 	return e
 }

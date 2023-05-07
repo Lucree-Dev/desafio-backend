@@ -28,7 +28,9 @@ func (p *PersonRepositoryPortImpl) Create(person domain.Person) *domain.Person {
 		panic(err)
 	}
 
-	personDomain := domain.NewPersonFull(
+	log.Info("ID gerado: " + strconv.Itoa(personEntity.Id))
+
+	return domain.NewPersonFull(
 		personEntity.Id,
 		personEntity.FirstName,
 		personEntity.LastName,
@@ -36,10 +38,6 @@ func (p *PersonRepositoryPortImpl) Create(person domain.Person) *domain.Person {
 		person.UserName,
 		personEntity.Birthday,
 	)
-
-	log.Info("ID gerado: " + strconv.Itoa(personEntity.Id))
-
-	return personDomain
 }
 
 func NewPersonRepositoryPort() outbounds.PersonRepositoryPort {
