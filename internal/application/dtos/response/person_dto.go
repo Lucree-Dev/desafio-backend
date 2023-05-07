@@ -2,6 +2,7 @@ package response
 
 import "time"
 
+// Compreendendo que a senha mesma criptografada é uma informação sigilosa, preferi ser mais cauteloso e não exibi-la no protocolo
 type Person struct {
 	FirstName string    `json:"first_name"`
 	LastName  string    `json:"last_name"`

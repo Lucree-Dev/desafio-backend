@@ -18,7 +18,7 @@ func (p *PersonRepositoryPortImpl) Create(person domain.Person) *domain.Person {
 	personEntity := entities.NewPersonFull(
 		person.FirstName,
 		person.LastName,
-		person.Password,
+		person.EncryptPassword(),
 		person.UserName,
 		person.Birthday,
 	)

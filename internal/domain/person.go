@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"account/pkg/bcrypt"
+	"time"
+)
 
 type Person struct {
 	Id        int
@@ -34,4 +37,12 @@ func NewPersonPartial(FirstName, LastName, Password, UserName string, Birthday t
 		Password:  Password,
 		UserName:  UserName,
 	}
+}
+
+func (p Person) EncryptPassword() string {
+	result, err := bcrypt.EncryptPassword(p.Password)
+	if err != nil {
+		panic(err)
+	}
+	return result
 }
