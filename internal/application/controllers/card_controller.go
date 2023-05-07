@@ -45,7 +45,7 @@ func CreateCard(context echo.Context) error {
 			cardCreated.Pan,
 			cardCreated.ExpireMonth,
 			cardCreated.ExpireYear,
-			cardCreated.CreationDate,
+			cardCreated.Date,
 		),
 		cardCreated.Id,
 	)
@@ -91,7 +91,7 @@ func UpdateCard(context echo.Context) error {
 			cardUpdated.Pan,
 			cardUpdated.ExpireMonth,
 			cardUpdated.ExpireYear,
-			cardUpdated.CreationDate,
+			cardUpdated.Date,
 		),
 	)
 }

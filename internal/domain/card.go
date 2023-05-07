@@ -13,10 +13,10 @@ type Card struct {
 	ExpireMonth  string
 	ExpireYear   string
 	SecurityCode string
-	CreationDate time.Time
+	Date         time.Time
 }
 
-func NewCardFull(id int, title, pan, expireMonth, expireYear, securityCode string, creationDate time.Time) *Card {
+func NewCardFull(id int, title, pan, expireMonth, expireYear, securityCode string, date time.Time) *Card {
 	return &Card{
 		Id:           id,
 		Title:        title,
@@ -24,7 +24,7 @@ func NewCardFull(id int, title, pan, expireMonth, expireYear, securityCode strin
 		ExpireMonth:  expireMonth,
 		ExpireYear:   expireYear,
 		SecurityCode: securityCode,
-		CreationDate: creationDate,
+		Date:         date,
 	}
 }
 

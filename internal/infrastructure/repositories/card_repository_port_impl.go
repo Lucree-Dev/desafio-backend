@@ -38,7 +38,7 @@ func (c *CardRepositoryPortImpl) Create(personId int, card domain.Card) *domain.
 		cardEntity.ExpireMonth,
 		cardEntity.ExpireYear,
 		cardEntity.SecurityCode,
-		cardEntity.CreationDate,
+		cardEntity.Date,
 	)
 }
 
@@ -69,7 +69,7 @@ func (c *CardRepositoryPortImpl) Update(personId, id int, card domain.Card) *dom
 		cardEntity.ExpireMonth,
 		cardEntity.ExpireYear,
 		cardEntity.SecurityCode,
-		cardEntity.CreationDate,
+		cardEntity.Date,
 	)
 }
 

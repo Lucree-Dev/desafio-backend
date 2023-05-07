@@ -9,7 +9,7 @@ type Card struct {
 	ExpireMonth  string    `pg:"expiry_mm"`
 	ExpireYear   string    `pg:"expiry_yyyy"`
 	SecurityCode string    `pg:"security_code"`
-	CreationDate time.Time `pg:"creation_date"`
+	Date         time.Time `pg:"date"`
 	PersonId     int       `pg:"people_id"`
 }
 
@@ -27,7 +27,7 @@ func NewCard(
 		ExpireMonth:  expireMonth,
 		ExpireYear:   expireYear,
 		SecurityCode: securityCode,
-		CreationDate: time.Now().UTC(),
+		Date:         time.Now().UTC(),
 		PersonId:     personId,
 	}
 }
