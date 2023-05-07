@@ -22,16 +22,19 @@ func (c *CardServicePortImpl) Create(personId int, card domain.Card) (*domain.Ca
 }
 
 func (c *CardServicePortImpl) Update(personId, id int, card domain.Card) (*domain.Card, error) {
-	person := c.PersonRepositoryPort.Find(personId)
-	if person == nil {
+	foundPerson := c.PersonRepositoryPort.Find(personId)
+	if foundPerson == nil {
 		return nil, fmt.Errorf("person not found")
 	}
-	cardUpdated := c.CardRepositoryPort.Update(personId, id, card)
-	if cardUpdated == nil {
+	foundCard := c.CardRepositoryPort.FindById(id)
+	if foundCard == nil {
 		return nil, fmt.Errorf("card not found")
 	}
-	//TODO Fazer tratativa quando um usuario tentar fazer a alteração de um cartao que não pertence ao mesmo
-	return cardUpdated, nil
+	cardBelongsToUser := c.CardRepositoryPort.ExistsByPersonIdAndId(personId, id)
+	if cardBelongsToUser {
+		return c.CardRepositoryPort.Update(personId, id, card), nil
+	}
+	return nil, fmt.Errorf("change not allowed for the informed card")
 }
 
 func NewCardServicePort() inbounds.CardServicePort {

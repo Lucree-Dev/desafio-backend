@@ -13,6 +13,10 @@ type Card struct {
 	PersonId     int       `pg:"people_id"`
 }
 
+func NewCardDefault() *Card {
+	return &Card{}
+}
+
 func NewCard(
 	title,
 	pan,

@@ -57,6 +57,49 @@ func (c *CardRepositoryPortImpl) Update(personId, id int, card domain.Card) *dom
 
 	query := conn.Model(cardEntity).Where("id = ?", id)
 
+	_, err := query.Update()
+
+	if err != nil {
+		panic(err)
+	}
+
+	log.Info("ID gerado: " + strconv.Itoa(cardEntity.Id))
+
+	return domain.NewCardFull(
+		cardEntity.Id,
+		cardEntity.Title,
+		cardEntity.Pan,
+		cardEntity.ExpireMonth,
+		cardEntity.ExpireYear,
+		cardEntity.SecurityCode,
+		cardEntity.Date,
+	)
+}
+
+func (c *CardRepositoryPortImpl) ExistsByPersonIdAndId(personId, id int) bool {
+	conn := config.OpenConnection()
+	defer conn.Close()
+
+	cardEntity := entities.NewCardDefault()
+	query := conn.Model(cardEntity).
+		Where("id = ?", id).
+		Where("people_id = ?", personId)
+
+	foundCard, err := query.Exists()
+
+	if err != nil {
+		panic(err)
+	}
+	return foundCard
+}
+
+func (c *CardRepositoryPortImpl) FindById(id int) *domain.Card {
+	conn := config.OpenConnection()
+	defer conn.Close()
+
+	var cardEntity entities.Card
+	query := conn.Model(&cardEntity).Where("id = ?", id)
+
 	foundCard, err := query.Exists()
 
 	if err != nil {
@@ -66,13 +109,10 @@ func (c *CardRepositoryPortImpl) Update(personId, id int, card domain.Card) *dom
 		return nil
 	}
 
-	_, err = query.Update()
-
+	err = query.Select()
 	if err != nil {
 		panic(err)
 	}
-
-	log.Info("ID gerado: " + strconv.Itoa(cardEntity.Id))
 
 	return domain.NewCardFull(
 		cardEntity.Id,
