@@ -7,6 +7,7 @@ type Person struct {
 	LastName  string    `json:"last_name"`
 	Birthday  time.Time `json:"birthday"`
 	Password  string    `json:"password"`
+	UserName  string    `json:"username"`
 }
 
 func NewPerson() *Person {

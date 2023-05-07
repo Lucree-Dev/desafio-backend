@@ -19,6 +19,7 @@ func (p *PersonRepositoryPortImpl) Create(person domain.Person) *domain.Person {
 		person.FirstName,
 		person.LastName,
 		person.Password,
+		person.UserName,
 		person.Birthday,
 	)
 	_, err := conn.Model(personEntity).Insert()
@@ -32,6 +33,7 @@ func (p *PersonRepositoryPortImpl) Create(person domain.Person) *domain.Person {
 		personEntity.FirstName,
 		personEntity.LastName,
 		personEntity.Password,
+		person.UserName,
 		personEntity.Birthday,
 	)
 

@@ -13,17 +13,18 @@ import (
 func CreatePerson(context echo.Context) error {
 	personServicePort := services.NewPersonServicePort()
 
-	person := requestDTO.NewPerson()
-	if err := context.Bind(person); err != nil {
+	requestPerson := requestDTO.NewPerson()
+	if err := context.Bind(requestPerson); err != nil {
 		return err
 	}
 
 	personCreated := personServicePort.Create(
 		domain.NewPersonPartial(
-			person.FirstName,
-			person.LastName,
-			person.Password,
-			person.Birthday,
+			requestPerson.FirstName,
+			requestPerson.LastName,
+			requestPerson.Password,
+			requestPerson.UserName,
+			requestPerson.Birthday,
 		),
 	)
 
@@ -31,6 +32,7 @@ func CreatePerson(context echo.Context) error {
 		responseDTO.NewPerson(
 			personCreated.FirstName,
 			personCreated.LastName,
+			personCreated.UserName,
 			personCreated.Birthday,
 		),
 		personCreated.Id,
