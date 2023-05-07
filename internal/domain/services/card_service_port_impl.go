@@ -11,8 +11,9 @@ type CardServicePortImpl struct {
 	CardRepositoryPort outbounds.CardRepositoryPort
 }
 
-func (c *CardServicePortImpl) Create(card domain.Card) *domain.Card {
-	return c.CardRepositoryPort.Create(card)
+func (c *CardServicePortImpl) Create(personId int, card domain.Card) *domain.Card {
+	//TODO Colocar validação para verificar se o usuário existe ou não
+	return c.CardRepositoryPort.Create(personId, card)
 }
 
 func NewCardServicePort() inbounds.CardServicePort {

@@ -10,6 +10,7 @@ type Card struct {
 	ExpireYear   string    `pg:"expiry_yyyy"`
 	SecurityCode string    `pg:"security_code"`
 	CreationDate time.Time `pg:"creation_date"`
+	PersonId     int       `pg:"people_id"`
 }
 
 func NewCardFull(Id int, Title, Pan, ExpireMonth, ExpireYear, SecurityCode string, CreationDate time.Time) *Card {
@@ -24,7 +25,7 @@ func NewCardFull(Id int, Title, Pan, ExpireMonth, ExpireYear, SecurityCode strin
 	}
 }
 
-func NewCardPartial(Title, Pan, ExpireMonth, ExpireYear, SecurityCode string) *Card {
+func NewCardPartial(Title, Pan, ExpireMonth, ExpireYear, SecurityCode string, PersonId int) *Card {
 	return &Card{
 		Title:        Title,
 		Pan:          Pan,
@@ -32,5 +33,6 @@ func NewCardPartial(Title, Pan, ExpireMonth, ExpireYear, SecurityCode string) *C
 		ExpireYear:   ExpireYear,
 		SecurityCode: SecurityCode,
 		CreationDate: time.Now(),
+		PersonId:     PersonId,
 	}
 }

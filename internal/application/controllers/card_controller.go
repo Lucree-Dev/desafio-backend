@@ -6,6 +6,7 @@ import (
 	"account/internal/application/response"
 	"account/internal/domain"
 	"account/internal/domain/services"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -18,7 +19,13 @@ func CreateCard(context echo.Context) error {
 		return err
 	}
 
+	personId, err := strconv.Atoi(context.Param("personId"))
+	if err != nil {
+		return err
+	}
+
 	cardCreated := cardServicePort.Create(
+		personId,
 		domain.NewCardPartial(
 			requestCard.Title,
 			requestCard.Pan,

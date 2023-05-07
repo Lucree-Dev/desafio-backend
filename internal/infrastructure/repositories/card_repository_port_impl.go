@@ -11,7 +11,7 @@ import (
 
 type CardRepositoryPortImpl struct{}
 
-func (c *CardRepositoryPortImpl) Create(card domain.Card) *domain.Card {
+func (c *CardRepositoryPortImpl) Create(personId int, card domain.Card) *domain.Card {
 	conn := config.OpenConnection()
 	defer conn.Close()
 
@@ -21,6 +21,7 @@ func (c *CardRepositoryPortImpl) Create(card domain.Card) *domain.Card {
 		card.ExpireMonth,
 		card.ExpireYear,
 		card.SecurityCode,
+		personId,
 	)
 	_, err := conn.Model(cardEntity).Insert()
 
