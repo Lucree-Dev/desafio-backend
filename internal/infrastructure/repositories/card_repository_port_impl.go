@@ -125,6 +125,14 @@ func (c *CardRepositoryPortImpl) FindById(id int) *domain.Card {
 	)
 }
 
+func (c *CardRepositoryPortImpl) Delete(id int) {
+	conn := config.OpenConnection()
+	defer conn.Close()
+
+	var cardEntity entities.Card
+	conn.Model(&cardEntity).Where("id = ?", id).Delete()
+}
+
 func NewCardRepositoryPort() outbounds.CardRepositoryPort {
 	return &CardRepositoryPortImpl{}
 }

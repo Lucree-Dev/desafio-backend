@@ -7,4 +7,5 @@ type CardRepositoryPort interface {
 	Update(personId, id int, card domain.Card) *domain.Card
 	ExistsByPersonIdAndId(personId, id int) bool
 	FindById(id int) *domain.Card
+	Delete(id int)
 }

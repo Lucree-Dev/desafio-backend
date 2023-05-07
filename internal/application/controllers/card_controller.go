@@ -95,3 +95,25 @@ func UpdateCard(context echo.Context) error {
 		),
 	)
 }
+
+func DeleteCard(context echo.Context) error {
+	cardServicePort := services.NewCardServicePort()
+
+	personId, err := strconv.Atoi(context.Param("personId"))
+	if err != nil {
+		return err
+	}
+
+	id, err := strconv.Atoi(context.Param("id"))
+	if err != nil {
+		return err
+	}
+
+	err = cardServicePort.Delete(personId, id)
+
+	if err != nil {
+		return response.NotFound(context, err.Error())
+	}
+
+	return response.NoContent(context)
+}

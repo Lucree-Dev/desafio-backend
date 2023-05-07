@@ -22,19 +22,36 @@ func (c *CardServicePortImpl) Create(personId int, card domain.Card) (*domain.Ca
 }
 
 func (c *CardServicePortImpl) Update(personId, id int, card domain.Card) (*domain.Card, error) {
+	err := c.validateUpdateAndDelete(personId, id)
+	if err != nil {
+		return nil, err
+	}
+	return c.CardRepositoryPort.Update(personId, id, card), nil
+}
+
+func (c *CardServicePortImpl) Delete(personId, id int) error {
+	err := c.validateUpdateAndDelete(personId, id)
+	if err != nil {
+		return err
+	}
+	c.CardRepositoryPort.Delete(id)
+	return nil
+}
+
+func (c *CardServicePortImpl) validateUpdateAndDelete(personId, id int) error {
 	foundPerson := c.PersonRepositoryPort.Find(personId)
 	if foundPerson == nil {
-		return nil, fmt.Errorf("person not found")
+		return fmt.Errorf("person not found")
 	}
 	foundCard := c.CardRepositoryPort.FindById(id)
 	if foundCard == nil {
-		return nil, fmt.Errorf("card not found")
+		return fmt.Errorf("card not found")
 	}
 	cardBelongsToUser := c.CardRepositoryPort.ExistsByPersonIdAndId(personId, id)
-	if cardBelongsToUser {
-		return c.CardRepositoryPort.Update(personId, id, card), nil
+	if !cardBelongsToUser {
+		return fmt.Errorf("change/remove not allowed for the informed card")
 	}
-	return nil, fmt.Errorf("change not allowed for the informed card")
+	return nil
 }
 
 func NewCardServicePort() inbounds.CardServicePort {
