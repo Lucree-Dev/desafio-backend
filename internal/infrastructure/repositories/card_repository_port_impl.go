@@ -133,6 +133,38 @@ func (c *CardRepositoryPortImpl) Delete(id int) {
 	conn.Model(&cardEntity).Where("id = ?", id).Delete()
 }
 
+func (c *CardRepositoryPortImpl) FindAllByPersonId(personId int) []domain.Card {
+	conn := config.OpenConnection()
+	defer conn.Close()
+
+	var cardEntities []entities.Card
+	err := conn.Model(&cardEntities).Where("people_id = ?", personId).Select()
+	if err != nil {
+		panic(err)
+	}
+
+	if cardEntities == nil {
+		return []domain.Card{}
+	}
+
+	var cardDomains []domain.Card
+	for _, cardEntity := range cardEntities {
+		cardDomains = append(
+			cardDomains,
+			domain.NewCard(
+				cardEntity.Id,
+				cardEntity.Title,
+				cardEntity.Pan,
+				cardEntity.ExpireMonth,
+				cardEntity.ExpireYear,
+				cardEntity.SecurityCode,
+				cardEntity.Date,
+			),
+		)
+	}
+	return cardDomains
+}
+
 func NewCardRepositoryPort() outbounds.CardRepositoryPort {
 	return &CardRepositoryPortImpl{}
 }

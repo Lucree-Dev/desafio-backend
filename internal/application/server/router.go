@@ -14,6 +14,7 @@ func RegisterEndPoints() *echo.Echo {
 	e.POST(basePath+"/persons/:personId/cards", CreateCard)
 	e.PUT(basePath+"/persons/:personId/cards/:id", UpdateCard)
 	e.DELETE(basePath+"/persons/:personId/cards/:id", DeleteCard)
+	e.GET(basePath+"/persons/:personId/cards", GetCards)
 
 	return e
 }

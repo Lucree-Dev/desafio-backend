@@ -38,6 +38,14 @@ func (c *CardServicePortImpl) Delete(personId, id int) error {
 	return nil
 }
 
+func (c *CardServicePortImpl) GetAllByPersonId(personId int) ([]domain.Card, error) {
+	foundPerson := c.PersonRepositoryPort.Find(personId)
+	if foundPerson == nil {
+		return []domain.Card{}, fmt.Errorf("person not found")
+	}
+	return c.CardRepositoryPort.FindAllByPersonId(personId), nil
+}
+
 func (c *CardServicePortImpl) validateUpdateAndDelete(personId, id int) error {
 	foundPerson := c.PersonRepositoryPort.Find(personId)
 	if foundPerson == nil {

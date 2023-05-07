@@ -8,4 +8,5 @@ type CardRepositoryPort interface {
 	ExistsByPersonIdAndId(personId, id int) bool
 	FindById(id int) *domain.Card
 	Delete(id int)
+	FindAllByPersonId(personId int) []domain.Card
 }

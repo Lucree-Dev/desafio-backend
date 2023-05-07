@@ -28,6 +28,18 @@ func NewCardFull(id int, title, pan, expireMonth, expireYear, securityCode strin
 	}
 }
 
+func NewCard(id int, title, pan, expireMonth, expireYear, securityCode string, date time.Time) Card {
+	return Card{
+		Id:           id,
+		Title:        title,
+		Pan:          pan,
+		ExpireMonth:  expireMonth,
+		ExpireYear:   expireYear,
+		SecurityCode: securityCode,
+		Date:         date,
+	}
+}
+
 func NewCardPartial(title, pan, expireMonth, expireYear, securityCode string) Card {
 	return Card{
 		Title:        title,

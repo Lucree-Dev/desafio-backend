@@ -117,3 +117,20 @@ func DeleteCard(context echo.Context) error {
 
 	return response.NoContent(context)
 }
+
+func GetCards(context echo.Context) error {
+	cardServicePort := services.NewCardServicePort()
+
+	personId, err := strconv.Atoi(context.Param("personId"))
+	if err != nil {
+		return err
+	}
+
+	cardDomains, err := cardServicePort.GetAllByPersonId(personId)
+
+	if err != nil {
+		return response.NotFound(context, err.Error())
+	}
+
+	return response.Ok(context, cardDomains)
+}
