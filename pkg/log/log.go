@@ -14,18 +14,18 @@ func log() *logrus.Logger {
 	return logger
 }
 
-func Info(message string) {
-	log().Info(message)
+func Info(value interface{}) {
+	log().Info(value)
 }
 
-func Error(message string) {
-	log().Error(message)
+func Error(value interface{}) {
+	log().Error(value)
 }
 
-func Warn(message string) {
-	log().Warn(message)
+func Warn(value interface{}) {
+	log().Warn(value)
 }
 
-func Debug(message string) {
-	log().Debug(message)
+func Debug(value interface{}) {
+	log().Debug(value)
 }

@@ -35,7 +35,38 @@ func (p *PersonRepositoryPortImpl) Create(person domain.Person) *domain.Person {
 		personEntity.FirstName,
 		personEntity.LastName,
 		personEntity.Password,
-		person.UserName,
+		personEntity.UserName,
+		personEntity.Birthday,
+	)
+}
+
+func (p *PersonRepositoryPortImpl) Find(id int) *domain.Person {
+	conn := config.OpenConnection()
+	defer conn.Close()
+
+	var personEntity entities.Person
+	query := conn.Model(&personEntity).Where("id = ?", id)
+
+	foundPerson, err := query.Exists()
+
+	if !foundPerson {
+		return nil
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	err = query.Select()
+	if err != nil {
+		panic(err)
+	}
+
+	return domain.NewPersonFull(
+		personEntity.Id,
+		personEntity.FirstName,
+		personEntity.LastName,
+		personEntity.Password,
+		personEntity.UserName,
 		personEntity.Birthday,
 	)
 }

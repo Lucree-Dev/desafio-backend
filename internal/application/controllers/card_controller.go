@@ -24,7 +24,7 @@ func CreateCard(context echo.Context) error {
 		return err
 	}
 
-	cardCreated := cardServicePort.Create(
+	cardCreated, err := cardServicePort.Create(
 		personId,
 		domain.NewCardPartial(
 			requestCard.Title,
@@ -34,6 +34,10 @@ func CreateCard(context echo.Context) error {
 			requestCard.SecurityCode,
 		),
 	)
+
+	if err != nil {
+		return response.NotFound(context, err.Error())
+	}
 
 	return response.Created(context,
 		responseDTO.NewCard(
