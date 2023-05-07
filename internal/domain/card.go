@@ -1,6 +1,10 @@
 package domain
 
-import "time"
+import (
+	"account/pkg/bcrypt"
+	"account/pkg/tokenize"
+	"time"
+)
 
 type Card struct {
 	Id           int
@@ -32,4 +36,16 @@ func NewCardPartial(title, pan, expireMonth, expireYear, securityCode string) Ca
 		ExpireYear:   expireYear,
 		SecurityCode: securityCode,
 	}
+}
+
+func (c Card) CardNumber() string {
+	return tokenize.TokenizeCardNumber(c.Pan)
+}
+
+func (c Card) EncryptSecurityCode() string {
+	result, err := bcrypt.Encrypt(c.SecurityCode)
+	if err != nil {
+		panic(err)
+	}
+	return result
 }

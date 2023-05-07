@@ -36,7 +36,7 @@ func NewPersonPartial(firstName, lastName, password, userName string, birthday t
 }
 
 func (p Person) EncryptPassword() string {
-	result, err := bcrypt.EncryptPassword(p.Password)
+	result, err := bcrypt.Encrypt(p.Password)
 	if err != nil {
 		panic(err)
 	}

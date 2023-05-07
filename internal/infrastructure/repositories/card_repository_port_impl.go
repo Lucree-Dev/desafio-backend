@@ -17,10 +17,10 @@ func (c *CardRepositoryPortImpl) Create(personId int, card domain.Card) *domain.
 
 	cardEntity := entities.NewCardPartial(
 		card.Title,
-		card.Pan,
+		card.CardNumber(),
 		card.ExpireMonth,
 		card.ExpireYear,
-		card.SecurityCode,
+		card.EncryptSecurityCode(),
 		personId,
 	)
 	_, err := conn.Model(cardEntity).Insert()
