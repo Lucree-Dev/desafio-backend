@@ -26,8 +26,12 @@ func (c *CardServicePortImpl) Update(personId, id int, card domain.Card) (*domai
 	if person == nil {
 		return nil, fmt.Errorf("person not found")
 	}
-	//TODO implementar trativa de erro quando cartão informado não existir
-	return c.CardRepositoryPort.Update(personId, id, card), nil
+	cardUpdated := c.CardRepositoryPort.Update(personId, id, card)
+	if cardUpdated == nil {
+		return nil, fmt.Errorf("card not found")
+	}
+	//TODO Fazer tratativa quando um usuario tentar fazer a alteração de um cartao que não pertence ao mesmo
+	return cardUpdated, nil
 }
 
 func NewCardServicePort() inbounds.CardServicePort {

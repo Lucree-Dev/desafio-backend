@@ -54,7 +54,19 @@ func (c *CardRepositoryPortImpl) Update(personId, id int, card domain.Card) *dom
 		card.EncryptSecurityCode(),
 		personId,
 	)
-	_, err := conn.Model(cardEntity).Where("id = ?", id).Update()
+
+	query := conn.Model(cardEntity).Where("id = ?", id)
+
+	foundCard, err := query.Exists()
+
+	if err != nil {
+		panic(err)
+	}
+	if !foundCard {
+		return nil
+	}
+
+	_, err = query.Update()
 
 	if err != nil {
 		panic(err)
