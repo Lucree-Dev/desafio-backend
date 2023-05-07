@@ -21,6 +21,15 @@ func (c *CardServicePortImpl) Create(personId int, card domain.Card) (*domain.Ca
 	return c.CardRepositoryPort.Create(personId, card), nil
 }
 
+func (c *CardServicePortImpl) Update(personId, id int, card domain.Card) (*domain.Card, error) {
+	person := c.PersonRepositoryPort.Find(personId)
+	if person == nil {
+		return nil, fmt.Errorf("person not found")
+	}
+	//TODO implementar trativa de erro quando cartão informado não existir
+	return c.CardRepositoryPort.Update(personId, id, card), nil
+}
+
 func NewCardServicePort() inbounds.CardServicePort {
 	return &CardServicePortImpl{
 		CardRepositoryPort:   repositories.NewCardRepositoryPort(),

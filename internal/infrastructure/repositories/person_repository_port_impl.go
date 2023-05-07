@@ -49,11 +49,11 @@ func (p *PersonRepositoryPortImpl) Find(id int) *domain.Person {
 
 	foundPerson, err := query.Exists()
 
-	if !foundPerson {
-		return nil
-	}
 	if err != nil {
 		panic(err)
+	}
+	if !foundPerson {
+		return nil
 	}
 
 	err = query.Select()
