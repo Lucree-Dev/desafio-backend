@@ -8,3 +8,5 @@ build: clean
 	cp -r application.yml ./out/
 docker-up: clean
 	docker-compose up --build
+docker-migrate:
+	docker exec account-api migrate -path=.docker/migrations -database "postgres://postgres:admin@postgresql:5432/accountDb?sslmode=disable" up
