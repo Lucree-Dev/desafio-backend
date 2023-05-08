@@ -1,0 +1,48 @@
+version: '3.3'
+
+networks:
+  account-network:
+    driver: bridge
+
+volumes:
+  account-postgresql:
+
+services:
+  postgresql:
+    image: postgres:15
+    container_name: account-postgresql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: accountDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - account-postgresql:/var/lib/account-postgresql
+    networks:
+      - account-network
+
+  pgadmin:
+    depends_on:
+      - postgresql
+    container_name: account-pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "9000:80"
+    networks:
+      - account-network
+
+  account:
+    depends_on:
+      - postgresql
+    container_name: account-api
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - account-network

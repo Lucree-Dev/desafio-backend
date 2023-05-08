@@ -1,0 +1,10 @@
+env: local
+
+application:
+  name: account-api
+  port: 8080
+  version: 0.0.1
+
+database:
+  account:
+    uri: "postgres://postgres:admin@postgresql:5432/accountDb?sslmode=disable"
