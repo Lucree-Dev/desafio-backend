@@ -34,3 +34,15 @@ services:
       - "9000:80"
     networks:
       - account-network
+
+  account:
+    depends_on:
+      - postgresql
+    container_name: account-api
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - account-network

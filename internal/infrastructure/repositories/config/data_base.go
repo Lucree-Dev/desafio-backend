@@ -8,7 +8,7 @@ import (
 
 func OpenConnection() *pg.DB {
 
-	opt, err := pg.ParseURL("postgres://postgres:admin@localhost:5432/accountDb?sslmode=disable") //TODO Puxar as infos de banco pelo arquivo application.yml
+	opt, err := pg.ParseURL("postgres://postgres:admin@postgresql:5432/accountDb?sslmode=disable") //TODO Puxar as infos de banco pelo arquivo application.yml
 	if err != nil {
 		panic(err)
 	}
