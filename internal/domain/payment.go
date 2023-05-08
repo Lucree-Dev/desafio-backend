@@ -34,6 +34,24 @@ func NewPaymentFull(
 }
 
 func NewPayment(
+	id,
+	friendId,
+	cardId,
+	personId int,
+	value decimal.Decimal,
+	date time.Time,
+) Payment {
+	return Payment{
+		Id:       id,
+		FriendId: friendId,
+		CardId:   cardId,
+		PersonId: personId,
+		Value:    value,
+		Date:     date,
+	}
+}
+
+func NewPaymentPartial(
 	friendId,
 	cardId,
 	personId int,

@@ -26,7 +26,7 @@ func CreatePayment(context echo.Context) error {
 
 	paymentCreated, err := paymentServicePort.Create(
 		personId,
-		domain.NewPayment(
+		domain.NewPaymentPartial(
 			requestPayment.FriendId,
 			requestPayment.BillingCard.CardId,
 			personId,
@@ -46,4 +46,39 @@ func CreatePayment(context echo.Context) error {
 		),
 		paymentCreated.Id,
 	)
+}
+
+func GetPaymentsByPerson(context echo.Context) error {
+	paymentServicePort := services.NewPaymentServicePort()
+
+	personId, err := strconv.Atoi(context.Param("personId"))
+	if err != nil {
+		return err
+	}
+
+	paymentDomains, err := paymentServicePort.GetAllByPersonId(personId)
+
+	if err != nil {
+		return response.NotFound(context, err.Error())
+	}
+
+	if paymentDomains == nil {
+		return response.Ok(context, []responseDTO.BankStatement{})
+	}
+
+	var paymentDtos []responseDTO.BankStatement
+	for _, paymentDomain := range paymentDomains {
+		paymentDtos = append(
+			paymentDtos,
+			responseDTO.NewBankStatement(
+				paymentDomain.PersonId,
+				paymentDomain.FriendId,
+				paymentDomain.CardId,
+				paymentDomain.Value,
+				paymentDomain.Date,
+			),
+		)
+	}
+
+	return response.Ok(context, paymentDtos)
 }

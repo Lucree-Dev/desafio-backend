@@ -14,24 +14,32 @@ type PaymentServicePortImpl struct {
 	PaymentRepositoryPort outbounds.PaymentRepositoryPort
 }
 
-func (c *PaymentServicePortImpl) Create(personId int, payment domain.Payment) (*domain.Payment, error) {
-	person := c.PersonRepositoryPort.Find(personId)
+func (p *PaymentServicePortImpl) Create(personId int, payment domain.Payment) (*domain.Payment, error) {
+	person := p.PersonRepositoryPort.Find(personId)
 	if person == nil {
 		return nil, fmt.Errorf("person not found")
 	}
-	friend := c.PersonRepositoryPort.Find(payment.FriendId)
+	friend := p.PersonRepositoryPort.Find(payment.FriendId)
 	if friend == nil {
 		return nil, fmt.Errorf("friend not found")
 	}
-	card := c.CardRepositoryPort.FindById(payment.CardId)
+	card := p.CardRepositoryPort.FindById(payment.CardId)
 	if card == nil {
 		return nil, fmt.Errorf("card not found")
 	}
-	cardBelongsToUser := c.CardRepositoryPort.ExistsByPersonIdAndId(personId, payment.CardId)
+	cardBelongsToUser := p.CardRepositoryPort.ExistsByPersonIdAndId(personId, payment.CardId)
 	if !cardBelongsToUser {
 		return nil, fmt.Errorf("transfer not allowed for the informed card")
 	}
-	return c.PaymentRepositoryPort.Create(personId, payment), nil
+	return p.PaymentRepositoryPort.Create(personId, payment), nil
+}
+
+func (p *PaymentServicePortImpl) GetAllByPersonId(personId int) ([]domain.Payment, error) {
+	person := p.PersonRepositoryPort.Find(personId)
+	if person == nil {
+		return nil, fmt.Errorf("person not found")
+	}
+	return p.PaymentRepositoryPort.FindAllByPersonId(personId), nil
 }
 
 func NewPaymentServicePort() inbounds.PaymentServicePort {

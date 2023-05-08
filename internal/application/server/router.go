@@ -16,6 +16,7 @@ func RegisterEndPoints() *echo.Echo {
 	e.DELETE(basePath+"/persons/:personId/cards/:id", DeleteCard)
 	e.GET(basePath+"/persons/:personId/cards", GetCards)
 	e.POST(basePath+"/persons/:personId/transfers", CreatePayment)
+	e.GET(basePath+"/persons/:personId/bank-statements", GetPaymentsByPerson)
 
 	return e
 }
