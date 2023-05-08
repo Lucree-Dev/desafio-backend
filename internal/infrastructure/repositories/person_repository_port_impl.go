@@ -6,7 +6,6 @@ import (
 	"account/internal/infrastructure/repositories/config"
 	"account/internal/infrastructure/repositories/entities"
 	"account/pkg/log"
-	"strconv"
 )
 
 type PersonRepositoryPortImpl struct{}
@@ -22,13 +21,24 @@ func (p *PersonRepositoryPortImpl) Create(person domain.Person) *domain.Person {
 		person.UserName,
 		person.Birthday,
 	)
+
+	log.Info(
+		"entity",
+		personEntity,
+		"Information before being persisted",
+	)
+
 	_, err := conn.Model(personEntity).Insert()
 
 	if err != nil {
 		panic(err)
 	}
 
-	log.Info("ID gerado: " + strconv.Itoa(personEntity.Id))
+	log.Info(
+		"id",
+		personEntity.Id,
+		"Id that was generated after recording in the database",
+	)
 
 	return domain.NewPersonFull(
 		personEntity.Id,
@@ -46,6 +56,12 @@ func (p *PersonRepositoryPortImpl) Find(id int) *domain.Person {
 
 	var personEntity entities.Person
 	query := conn.Model(&personEntity).Where("id = ?", id)
+
+	log.Info(
+		"query",
+		"where id = ?",
+		"Searching by id",
+	)
 
 	foundPerson, err := query.Exists()
 

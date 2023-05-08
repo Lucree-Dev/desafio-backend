@@ -6,7 +6,6 @@ import (
 	"account/internal/infrastructure/repositories/config"
 	"account/internal/infrastructure/repositories/entities"
 	"account/pkg/log"
-	"strconv"
 )
 
 type CardRepositoryPortImpl struct{}
@@ -23,13 +22,24 @@ func (c *CardRepositoryPortImpl) Create(personId int, card domain.Card) *domain.
 		card.EncryptSecurityCode(),
 		personId,
 	)
+
+	log.Info(
+		"entity",
+		cardEntity,
+		"Information before being persisted",
+	)
+
 	_, err := conn.Model(cardEntity).Insert()
 
 	if err != nil {
 		panic(err)
 	}
 
-	log.Info("ID gerado: " + strconv.Itoa(cardEntity.Id))
+	log.Info(
+		"id",
+		cardEntity.Id,
+		"Id that was generated after recording in the database",
+	)
 
 	return domain.NewCardFull(
 		cardEntity.Id,
@@ -55,6 +65,12 @@ func (c *CardRepositoryPortImpl) Update(personId, id int, card domain.Card) *dom
 		personId,
 	)
 
+	log.Info(
+		"entity",
+		cardEntity,
+		"Information before being persisted",
+	)
+
 	query := conn.Model(cardEntity).Where("id = ?", id)
 
 	_, err := query.Update()
@@ -63,7 +79,7 @@ func (c *CardRepositoryPortImpl) Update(personId, id int, card domain.Card) *dom
 		panic(err)
 	}
 
-	log.Info("ID gerado: " + strconv.Itoa(cardEntity.Id))
+	log.InfoSimple("The data has been updated correctly")
 
 	return domain.NewCardFull(
 		cardEntity.Id,
@@ -85,6 +101,12 @@ func (c *CardRepositoryPortImpl) ExistsByPersonIdAndId(personId, id int) bool {
 		Where("id = ?", id).
 		Where("people_id = ?", personId)
 
+	log.Info(
+		"query",
+		"where id = ? and people_id = ?",
+		"Searching by id and people_id",
+	)
+
 	foundCard, err := query.Exists()
 
 	if err != nil {
@@ -99,6 +121,12 @@ func (c *CardRepositoryPortImpl) FindById(id int) *domain.Card {
 
 	var cardEntity entities.Card
 	query := conn.Model(&cardEntity).Where("id = ?", id)
+
+	log.Info(
+		"query",
+		"where id = ?",
+		"Searching by id",
+	)
 
 	foundCard, err := query.Exists()
 
@@ -131,11 +159,19 @@ func (c *CardRepositoryPortImpl) Delete(id int) {
 
 	var cardEntity entities.Card
 	conn.Model(&cardEntity).Where("id = ?", id).Delete()
+
+	log.InfoSimple("Delete completed successfully")
 }
 
 func (c *CardRepositoryPortImpl) FindAllByPersonId(personId int) []domain.Card {
 	conn := config.OpenConnection()
 	defer conn.Close()
+
+	log.Info(
+		"query",
+		"where people_id = ?",
+		"Searching by people_id",
+	)
 
 	var cardEntities []entities.Card
 	err := conn.Model(&cardEntities).Where("people_id = ?", personId).Select()

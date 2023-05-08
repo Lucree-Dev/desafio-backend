@@ -6,7 +6,6 @@ import (
 	"account/internal/infrastructure/repositories/config"
 	"account/internal/infrastructure/repositories/entities"
 	"account/pkg/log"
-	"strconv"
 )
 
 type PaymentRepositoryPortImpl struct{}
@@ -21,13 +20,24 @@ func (p *PaymentRepositoryPortImpl) Create(personId int, payment domain.Payment)
 		personId,
 		payment.Value,
 	)
+
+	log.Info(
+		"entity",
+		paymentEntity,
+		"Information before being persisted",
+	)
+
 	_, err := conn.Model(paymentEntity).Insert()
 
 	if err != nil {
 		panic(err)
 	}
 
-	log.Info("ID gerado: " + strconv.Itoa(paymentEntity.Id))
+	log.Info(
+		"id",
+		paymentEntity.Id,
+		"Id that was generated after recording in the database",
+	)
 
 	return domain.NewPaymentFull(
 		paymentEntity.Id,
@@ -48,6 +58,12 @@ func (p *PaymentRepositoryPortImpl) FindAllByPersonId(personId int) []domain.Pay
 	if err != nil {
 		panic(err)
 	}
+
+	log.Info(
+		"query",
+		"where people_id = ?",
+		"Searching by people_id",
+	)
 
 	var paymentDomains []domain.Payment
 	for _, paymentEntity := range paymentEntities {

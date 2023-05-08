@@ -14,18 +14,24 @@ func log() *logrus.Logger {
 	return logger
 }
 
-func Info(value interface{}) {
+func Info(field string, value interface{}, message string) {
+	log().WithFields(logrus.Fields{
+		field: value,
+	}).Info(message)
+}
+
+func InfoSimple(value interface{}) {
 	log().Info(value)
 }
 
-func Error(value interface{}) {
+func ErrorSimple(value interface{}) {
 	log().Error(value)
 }
 
-func Warn(value interface{}) {
+func WarnSimple(value interface{}) {
 	log().Warn(value)
 }
 
-func Debug(value interface{}) {
+func DebugSimple(value interface{}) {
 	log().Debug(value)
 }

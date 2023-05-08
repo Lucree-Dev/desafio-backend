@@ -6,6 +6,7 @@ import (
 	"account/internal/application/response"
 	"account/internal/domain"
 	"account/internal/domain/services"
+	"account/pkg/log"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -18,6 +19,12 @@ func CreateCard(context echo.Context) error {
 	if err := context.Bind(requestCard); err != nil {
 		return err
 	}
+
+	log.Info(
+		"path",
+		"/account/persons/"+context.Param("personId")+"/cards",
+		"Registering a new user card",
+	)
 
 	personId, err := strconv.Atoi(context.Param("personId"))
 	if err != nil {
@@ -59,6 +66,12 @@ func UpdateCard(context echo.Context) error {
 		return err
 	}
 
+	log.Info(
+		"path",
+		"/account/persons/"+context.Param("personId")+"/cards/"+context.Param("id"),
+		"Changing a User's Card Details",
+	)
+
 	personId, err := strconv.Atoi(context.Param("personId"))
 	if err != nil {
 		return err
@@ -99,6 +112,12 @@ func UpdateCard(context echo.Context) error {
 func DeleteCard(context echo.Context) error {
 	cardServicePort := services.NewCardServicePort()
 
+	log.Info(
+		"path",
+		"/account/persons/"+context.Param("personId")+"/cards/"+context.Param("id"),
+		"Deleting a User's Card",
+	)
+
 	personId, err := strconv.Atoi(context.Param("personId"))
 	if err != nil {
 		return err
@@ -120,6 +139,12 @@ func DeleteCard(context echo.Context) error {
 
 func GetCards(context echo.Context) error {
 	cardServicePort := services.NewCardServicePort()
+
+	log.Info(
+		"path",
+		"/account/persons/"+context.Param("personId")+"/cards",
+		"Listing all user cards",
+	)
 
 	personId, err := strconv.Atoi(context.Param("personId"))
 	if err != nil {

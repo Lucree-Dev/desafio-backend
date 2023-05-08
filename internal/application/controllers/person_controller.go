@@ -6,12 +6,19 @@ import (
 	"account/internal/application/response"
 	"account/internal/domain"
 	"account/internal/domain/services"
+	"account/pkg/log"
 
 	"github.com/labstack/echo/v4"
 )
 
 func CreatePerson(context echo.Context) error {
 	personServicePort := services.NewPersonServicePort()
+
+	log.Info(
+		"path",
+		"/account/persons",
+		"Registering new user",
+	)
 
 	requestPerson := requestDTO.NewPerson()
 	if err := context.Bind(requestPerson); err != nil {

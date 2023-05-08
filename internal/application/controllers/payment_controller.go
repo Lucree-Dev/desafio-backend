@@ -6,6 +6,7 @@ import (
 	"account/internal/application/response"
 	"account/internal/domain"
 	"account/internal/domain/services"
+	"account/pkg/log"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -18,6 +19,12 @@ func CreatePayment(context echo.Context) error {
 	if err := context.Bind(requestPayment); err != nil {
 		return err
 	}
+
+	log.Info(
+		"path",
+		"/account/persons/"+context.Param("personId")+"/transfers",
+		"Transferring to a friend",
+	)
 
 	personId, err := strconv.Atoi(context.Param("personId"))
 	if err != nil {
@@ -50,6 +57,12 @@ func CreatePayment(context echo.Context) error {
 
 func GetPaymentsByPerson(context echo.Context) error {
 	paymentServicePort := services.NewPaymentServicePort()
+
+	log.Info(
+		"path",
+		"/account/persons/"+context.Param("personId")+"/bank-statements",
+		"Listing all user transfers",
+	)
 
 	personId, err := strconv.Atoi(context.Param("personId"))
 	if err != nil {
@@ -85,6 +98,12 @@ func GetPaymentsByPerson(context echo.Context) error {
 
 func GetPayments(context echo.Context) error {
 	paymentServicePort := services.NewPaymentServicePort()
+
+	log.Info(
+		"path",
+		"/account/bank-statements",
+		"Listing all app downloads",
+	)
 
 	paymentDomains := paymentServicePort.GetAll()
 

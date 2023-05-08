@@ -26,6 +26,11 @@ entre outras, garantindo um código mais limpo, organizado e de fácil manutenç
         criação das tabelas, porém antes disso verifique se o container do PostgreSQL já subiu, caso positivo execute o comando: 
         docker exec account-api migrate -path=.docker/migrations -database "postgres://postgres:admin@postgresql:5432/accountDb?sslmode=disable" up
 
+- Caso deseje utilizar o pgAdmin como client para o PostgreSQL, seguem as configurações:
+    - Host: http://localhost:9000
+    - Usuário: root@gmail.com
+    - Senha: admin
+
 >>> Funcionalidades <<<
 - Para uma melhor legibilidade na URI dos recursos fiz as alterações necessárias para isso, seguem abaixo.
 
