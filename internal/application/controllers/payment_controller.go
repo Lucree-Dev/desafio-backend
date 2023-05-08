@@ -82,3 +82,29 @@ func GetPaymentsByPerson(context echo.Context) error {
 
 	return response.Ok(context, paymentDtos)
 }
+
+func GetPayments(context echo.Context) error {
+	paymentServicePort := services.NewPaymentServicePort()
+
+	paymentDomains := paymentServicePort.GetAll()
+
+	if paymentDomains == nil {
+		return response.Ok(context, []responseDTO.BankStatement{})
+	}
+
+	var paymentDtos []responseDTO.BankStatement
+	for _, paymentDomain := range paymentDomains {
+		paymentDtos = append(
+			paymentDtos,
+			responseDTO.NewBankStatement(
+				paymentDomain.PersonId,
+				paymentDomain.FriendId,
+				paymentDomain.CardId,
+				paymentDomain.Value,
+				paymentDomain.Date,
+			),
+		)
+	}
+
+	return response.Ok(context, paymentDtos)
+}

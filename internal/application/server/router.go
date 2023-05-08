@@ -17,6 +17,7 @@ func RegisterEndPoints() *echo.Echo {
 	e.GET(basePath+"/persons/:personId/cards", GetCards)
 	e.POST(basePath+"/persons/:personId/transfers", CreatePayment)
 	e.GET(basePath+"/persons/:personId/bank-statements", GetPaymentsByPerson)
+	e.GET(basePath+"/bank-statements", GetPayments)
 
 	return e
 }

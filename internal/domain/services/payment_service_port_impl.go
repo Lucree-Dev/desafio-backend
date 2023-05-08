@@ -42,6 +42,10 @@ func (p *PaymentServicePortImpl) GetAllByPersonId(personId int) ([]domain.Paymen
 	return p.PaymentRepositoryPort.FindAllByPersonId(personId), nil
 }
 
+func (p *PaymentServicePortImpl) GetAll() []domain.Payment {
+	return p.PaymentRepositoryPort.FindAll()
+}
+
 func NewPaymentServicePort() inbounds.PaymentServicePort {
 	return &PaymentServicePortImpl{
 		CardRepositoryPort:    repositories.NewCardRepositoryPort(),

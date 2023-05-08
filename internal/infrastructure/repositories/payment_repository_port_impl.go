@@ -66,6 +66,33 @@ func (p *PaymentRepositoryPortImpl) FindAllByPersonId(personId int) []domain.Pay
 	return paymentDomains
 }
 
+func (p *PaymentRepositoryPortImpl) FindAll() []domain.Payment {
+	conn := config.OpenConnection()
+	defer conn.Close()
+
+	var paymentEntities []entities.Payment
+	err := conn.Model(&paymentEntities).Select()
+	if err != nil {
+		panic(err)
+	}
+
+	var paymentDomains []domain.Payment
+	for _, paymentEntity := range paymentEntities {
+		paymentDomains = append(
+			paymentDomains,
+			domain.NewPayment(
+				paymentEntity.Id,
+				paymentEntity.FriendId,
+				paymentEntity.CardId,
+				paymentEntity.PersonId,
+				paymentEntity.Value,
+				paymentEntity.Date,
+			),
+		)
+	}
+	return paymentDomains
+}
+
 func NewPaymentRepositoryPort() outbounds.PaymentRepositoryPort {
 	return &PaymentRepositoryPortImpl{}
 }
