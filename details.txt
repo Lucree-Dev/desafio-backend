@@ -1,1 +1,113 @@
 
+O microserviço foi desenvolvido utilizando a arquitetura hexagonal + DDD, que traz como principal vantagem a separação clara das 
+responsabilidades entre as camadas da aplicação. Além disso, foram aplicadas boas práticas como SOLID, KISS, DRY, YAGNI
+entre outras, garantindo um código mais limpo, organizado e de fácil manutenção.
+
+>>> Tecnologias utilizadas <<<
+- Go -> Linguagem de programação
+- go-pg -> ORM de banco para usar o PostgreSQL
+- echo -> Framework leve para construção de APIs
+- crypto -> Criptografar informações sigilosas
+- logrus -> Logs da aplicação 
+- decimal -> Para trabalhar com valores monetários
+
+>>> Setup <<<
+- Será necessário ter instalado na máquina o docker e o docker-compose.
+- Execute o seguinte comando: make docker-up
+
+>>> Funcionalidades <<<
+- Para uma melhor legibilidade na URI dos recursos fiz as alterações necessárias para isso, seguem abaixo.
+
+    >> Manter Cartão <<<
+
+        1> Cadastrar <1
+        Regra: Só podemos adicionar um cartão quando o usuário existir.
+
+        CURL:
+        curl --location --request POST 'http://localhost:8080/account/persons/1/cards' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "title": "Marcos Pinho Titular",
+            "pan": "45454648644345",
+            "expiry_mm": "02",
+            "expiry_yyyy": "2025",
+            "security_code": "123"
+        }'
+
+        2> Alterar <2
+        Regra: Só podemos alterar um cartão quando o usuário existir.
+        Regra: Só podemos alterar um cartão quando o mesmo existir.
+        Regra: Só podemos alterar um cartão quando for o dono do mesmo que esteja realizando a operação.
+
+        CURL:
+        curl --location --request PUT 'http://localhost:8080/account/persons/1/cards/1' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "title": "Marcos Pinho Teste",
+            "pan": "4534315478978",
+            "expiry_mm": "05",
+            "expiry_yyyy": "2030",
+            "security_code": "321"
+        }'
+
+        3> Remover <3
+        Regra: Só podemos excluir um cartão quando o usuário existir.
+        Regra: Só podemos excluir um cartão quando o mesmo existir.
+        Regra: Só podemos excluir um cartão quando for o dono do mesmo que esteja realizando a operação.
+        
+        CURL:
+        curl --location --request DELETE 'http://localhost:8080/account/persons/1/cards/2'
+
+        4> Listar <4
+        Regra: Só podemos listar os cartões do usuário somente quando o mesmo existir.
+
+        CURL:
+        curl --location --request GET 'http://localhost:8080/account/persons/1/cards'
+
+    >> Manter Usuário <<
+
+        5> Cadastrar <5
+        CURL:
+        curl --location --request POST 'http://localhost:8080/account/persons' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "first_name": "Marcos",
+            "last_name": "Pinho",
+            "birthday": "1984-09-14T00:00:00Z",
+            "password": "123456",
+            "username": "marcos_pinho"
+        }'
+
+    >> Manter Payment <<
+
+        6> Transferir <6
+        Regra: Só podemos realizar uma transferência se o usuário existir.
+        Regra: Só podemos realizar uma transferência se o amigo do usuário existir.
+        Regra: Só podemos realizar uma transferência quando o cartão do usuário existir.
+        Regra: Só podemos realizar uma transferência quando o usuário utilizar seu propio cartão.
+
+        CURL:
+        curl --location --request POST 'http://localhost:8080/account/persons/2/transfers' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "friend_id": 4,
+            "total_to_transfer": 80.25,
+            "billing_card": {
+                "card_id": 3
+            }
+        }'
+
+        7> Listar extrato bancaria por usuário <7
+        Regra: Só podemos listar o extrato bancário do usuário caso o mesmo exista.
+
+        CURL:
+        curl --location --request GET 'http://localhost:8080/account/persons/1/bank-statements'
+
+        8> Listar extrato bancaria de todos os usuários <8
+        curl --location --request GET 'http://localhost:8080/account/bank-statements'
+
+
+
+Ps: Embora tenha implementado todas as funcionalidades que utilizam verbos de escrita, não foi possível concluir a validação de 
+obrigatoriedade a tempo. Além disso, não compreendi o recurso "/account/friends", o que inviabilizou sua implementação. 
+Vale ressaltar que, infelizmente, não foi possível incluir autenticação nas requisições.
