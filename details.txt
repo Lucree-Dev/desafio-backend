@@ -104,6 +104,8 @@ entre outras, garantindo um código mais limpo, organizado e de fácil manutenç
         curl --location --request GET 'http://localhost:8080/account/persons/1/bank-statements'
 
         8> Listar extrato bancaria de todos os usuários <8
+        
+        CURL:
         curl --location --request GET 'http://localhost:8080/account/bank-statements'
 
 
