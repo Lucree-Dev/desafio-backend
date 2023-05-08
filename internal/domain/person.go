@@ -14,7 +14,14 @@ type Person struct {
 	UserName  string
 }
 
-func NewPersonFull(id int, firstName, lastName, password, userName string, birthday time.Time) *Person {
+func NewPersonFull(
+	id int,
+	firstName,
+	lastName,
+	password,
+	userName string,
+	birthday time.Time,
+) *Person {
 	return &Person{
 		Id:        id,
 		FirstName: firstName,
@@ -25,7 +32,13 @@ func NewPersonFull(id int, firstName, lastName, password, userName string, birth
 	}
 }
 
-func NewPersonPartial(firstName, lastName, password, userName string, birthday time.Time) Person {
+func NewPersonPartial(
+	firstName,
+	lastName,
+	password,
+	userName string,
+	birthday time.Time,
+) Person {
 	return Person{
 		FirstName: firstName,
 		LastName:  lastName,

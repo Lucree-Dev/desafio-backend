@@ -16,5 +16,7 @@ func (p *PersonServicePortImpl) Create(person domain.Person) *domain.Person {
 }
 
 func NewPersonServicePort() inbounds.PersonServicePort {
-	return &PersonServicePortImpl{PersonRepositoryPort: repositories.NewPersonRepositoryPort()}
+	return &PersonServicePortImpl{
+		PersonRepositoryPort: repositories.NewPersonRepositoryPort(),
+	}
 }

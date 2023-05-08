@@ -11,7 +11,13 @@ type Card struct {
 	Date        time.Time `json:"date"`
 }
 
-func NewCard(title, pan, expireMonth, expireYear string, date time.Time) Card {
+func NewCard(
+	title,
+	pan,
+	expireMonth,
+	expireYear string,
+	date time.Time,
+) Card {
 	return Card{
 		Title:       title,
 		Pan:         pan,

@@ -16,7 +16,15 @@ type Card struct {
 	Date         time.Time
 }
 
-func NewCardFull(id int, title, pan, expireMonth, expireYear, securityCode string, date time.Time) *Card {
+func NewCardFull(
+	id int,
+	title,
+	pan,
+	expireMonth,
+	expireYear,
+	securityCode string,
+	date time.Time,
+) *Card {
 	return &Card{
 		Id:           id,
 		Title:        title,
@@ -28,7 +36,15 @@ func NewCardFull(id int, title, pan, expireMonth, expireYear, securityCode strin
 	}
 }
 
-func NewCard(id int, title, pan, expireMonth, expireYear, securityCode string, date time.Time) Card {
+func NewCard(
+	id int,
+	title,
+	pan,
+	expireMonth,
+	expireYear,
+	securityCode string,
+	date time.Time,
+) Card {
 	return Card{
 		Id:           id,
 		Title:        title,
@@ -40,7 +56,13 @@ func NewCard(id int, title, pan, expireMonth, expireYear, securityCode string, d
 	}
 }
 
-func NewCardPartial(title, pan, expireMonth, expireYear, securityCode string) Card {
+func NewCardPartial(
+	title,
+	pan,
+	expireMonth,
+	expireYear,
+	securityCode string,
+) Card {
 	return Card{
 		Title:        title,
 		Pan:          pan,
