@@ -10,10 +10,21 @@ entre outras, garantindo um código mais limpo, organizado e de fácil manutenç
 - crypto -> Criptografar informações sigilosas
 - logrus -> Logs da aplicação 
 - decimal -> Para trabalhar com valores monetários
+- golang-migrate -> Migração das tabelas na base de dados
 
->>> Setup <<<
+>>> Setup - Primeiros passos para rodar a aplicação <<<
 - Será necessário ter instalado na máquina o docker e o docker-compose.
-- Execute o seguinte comando: make docker-up
+    >> Se quiser rodar a aplcação através do comando make <<
+        - Verifique se tem o make instalado na máquina, vai ser por ele que irá fazer as chamadas no docker
+        - Execute o seguinte comando: make docker-up
+        - Caso seja a primeira vez que esta subindo estes containers será necessário rodar os scripts de migração na base de dados para a 
+        criação das tabelas, porém antes disso verifique se o container do PostgreSQL já subiu, caso positivo execute o comando: 
+        make docker-migrate
+    >> Caso não tenha o make instalado na máquina, você pode executar diretamente o docker <<
+        - Execute o seguinte comando: docker-compose up --build
+        - Caso seja a primeira vez que esta subindo estes containers será necessário rodar os scripts de migração na base de dados para a 
+        criação das tabelas, porém antes disso verifique se o container do PostgreSQL já subiu, caso positivo execute o comando: 
+        docker exec account-api migrate -path=.docker/migrations -database "postgres://postgres:admin@postgresql:5432/accountDb?sslmode=disable" up
 
 >>> Funcionalidades <<<
 - Para uma melhor legibilidade na URI dos recursos fiz as alterações necessárias para isso, seguem abaixo.
