@@ -1,1 +1,20 @@
+# Desafio Backend
+
+Este projeto foi desenvolvido utilizando as seguintes tecnologias:
+
+## GORM
+
+O GORM foi escolhido devido às suas qualidades de [descreva algumas qualidades], além da sua boa performance e facilidade de uso e escalabilidade.
+
+## Postgres
+
+O banco de dados escolhido foi o Postgres, por ser um dos mais conhecidos e de fácil uso no mercado, além de ter um bom desempenho e escalabilidade.
+
+## Gorilla Mux
+
+Para o gerenciamento do servidor e rotas, foi escolhido o Gorilla Mux, devido à sua popularidade e facilidade de uso.
+
+## Arquitetura MVC
+
+A arquitetura utilizada foi a baseada em MVC, que oferece diversas vantagens como [descreva algumas vantagens].
 
