@@ -1,1 +1,15 @@
+This POC was developed using the Python language, with DRF (Django-Rest-Framework) and JWT authentication (JSON Web Token).
+It is containerized using Docker.
+To install, run:
+$ docker build .
+$ docker-compose up
 
+It will create admin:admin (user/pass) automatically.
+
+Example of use:
+
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "admin"}' \
+  http://localhost:8000/api/token/
