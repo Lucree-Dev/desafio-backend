@@ -1,10 +1,25 @@
-version: '1'
-
 services:
+  db:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=desafio
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/usr/src/desafio/
     ports:
       - "8000:8000"
-    volumes:
-      - .:/desafio
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    entrypoint: ./entrypoint.sh
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
