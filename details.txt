@@ -1,1 +1,26 @@
+This POC was developed using the Python language, with DRF (Django-Rest-Framework) and pow JWT authentication (JSON Web Token).
+It is containerized using Docker.
+To install, run:
 
+docker run -d -p 8080:8000  -v src:/drf_src --name django_drf_app django_drf
+docker exec -it django_drf_app /bin/bash
+
+
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"username": "licensed", "password": "123"}' \
+  http://localhost:8000/api/token/
+
+
+
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"first_name":"Joao", "last_name": "da Costa", "birthday": "1900-01-01", "password": "123", "username": "joao", "email": "joao@joao.com", "user_id": "2783ghdc526cgh25fc89gh456789fg23"}' \
+  http://localhost:8000/accounts/person/
+
+curl \
+  -X GET \
+  -H "Content-Type: application/json" \
+  http://localhost:8000/accounts/friends/
